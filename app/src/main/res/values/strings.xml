@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title">title</string>
+    <string name="description">description</string>
+    <string name="freeModeText">Practice with your own custom exercises.</string>
+</resources>

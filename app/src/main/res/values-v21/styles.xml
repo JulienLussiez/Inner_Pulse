@@ -1,0 +1,28 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
+        <!-- Customize your theme here. -->
+        <item name="actionBarStyle">@style/MyActionBarTheme</item>
+        <item name="colorPrimary">#005cb2</item>
+        <item name="android:colorPrimaryDark">#001970</item>
+        <item name="android:colorAccent">#000</item>
+        <item name="android:colorControlHighlight">#000</item>
+        <item name="android:colorControlNormal">#000</item>
+        <item name="android:textColorPrimary">#000</item>
+        <item name="android:itemTextAppearance">@style/MenuItemTextAppearance</item>
+    </style>
+
+    <style name="MenuItemTextAppearance">
+        <item name="android:textColor">#000</item>
+    </style>
+
+    <style name="MyActionBarTheme" parent="Base.Widget.AppCompat.Light.ActionBar.Solid">
+        <item name="elevation">0dp</item>
+        <item name="titleTextStyle">@style/MyTheme.ActionBar.TitleTextStyle</item>
+    </style>
+
+    <style name="MyTheme.ActionBar.TitleTextStyle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
+        <item name="android:textColor">#fff</item>
+    </style>
+</resources>

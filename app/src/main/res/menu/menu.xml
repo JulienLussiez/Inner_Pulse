@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <!--<item-->
+        <!--android:id="@+id/action_back"-->
+        <!--android:gravity="left|start"-->
+        <!--android:icon="@drawable/ic_arrow_back_black_24dp"-->
+        <!--app:showAsAction="always" />-->
+    <item
+        android:id="@+id/action_settings"
+        android:icon="@drawable/ic_settings_black_24dp"
+        app:showAsAction="ifRoom">
+    </item>
+
+    <item
+        android:id="@+id/action_information"
+        android:icon="@drawable/ic_more_vert_black_24dp"
+        app:showAsAction="ifRoom"
+        android:title="Informations">
+
+        <menu android:id="@+id/sub_menu">
+            <item android:id="@+id/save"
+                android:title="Send"   />
+
+            <item android:id="@+id/about"
+                android:title="About"  />
+        </menu>
+    </item>
+</menu>

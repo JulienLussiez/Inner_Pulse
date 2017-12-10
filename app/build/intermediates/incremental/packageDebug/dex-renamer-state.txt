@@ -1,0 +1,7 @@
+#Thu Dec 07 11:00:41 CET 2017
+base.0=D\:\\OneDrive\\Programmation\\Inner Pulse\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10000\\instant-run-bootstrap_e1bd422484bdee9f04aa969f04761f22e544de97
+renamed.1=classes.dex
+renamed.0=classes2.dex
+file.1=D\:\\OneDrive\\Programmation\\Inner Pulse\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10000\\instant-run_7db306af927afb03a071227ae0b196d87e197d38\\classes.dex
+base.1=D\:\\OneDrive\\Programmation\\Inner Pulse\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10000\\instant-run_7db306af927afb03a071227ae0b196d87e197d38
+file.0=D\:\\OneDrive\\Programmation\\Inner Pulse\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10000\\instant-run-bootstrap_e1bd422484bdee9f04aa969f04761f22e544de97\\classes.dex

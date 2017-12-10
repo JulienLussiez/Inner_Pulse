@@ -1,0 +1,126 @@
+-- Merging decision tree log ---
+manifest
+ADDED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml:1:1-40:12
+	package
+		ADDED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml:2:9-36
+		INJECTED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml
+		INJECTED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml
+	android:versionName
+		INJECTED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml
+		INJECTED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml
+	xmlns:android
+		ADDED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml:1:11-69
+	android:versionCode
+		INJECTED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml
+		INJECTED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml
+uses-permission#android.permission.INTERNET
+ADDED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml:4:5-67
+	android:name
+		ADDED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml:4:22-64
+uses-permission#android.permission.READ_EXTERNAL_STORAGE
+ADDED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml:5:5-80
+	android:name
+		ADDED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml:5:22-77
+uses-permission#android.permission.READ_INTERNAL_STORAGE
+ADDED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml:6:5-80
+	android:name
+		ADDED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml:6:22-77
+uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
+ADDED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml:7:5-81
+	android:name
+		ADDED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml:7:22-78
+uses-permission#android.permission.ACCESS_NETWORK_STATE
+ADDED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml:8:5-79
+	android:name
+		ADDED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml:8:22-76
+application
+ADDED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml:10:2-38:19
+MERGED from [com.android.support:cardview-v7:25.3.1] C:\Users\Julien\.android\build-cache\15d239f68d62a446102f6ecb161621e6b3ebb49d\output\AndroidManifest.xml:26:5-20
+MERGED from [com.android.support.constraint:constraint-layout:1.0.2] C:\Users\Julien\.android\build-cache\cd01e6842f8c96fb0d2d6783c012a8736845d36e\output\AndroidManifest.xml:9:5-20
+MERGED from [com.android.support:design:25.0.1] C:\Users\Julien\.android\build-cache\3a461e9b8a947123e81f1d4c5645825f18d72ae2\output\AndroidManifest.xml:25:5-20
+MERGED from [com.android.support:appcompat-v7:25.0.1] C:\Users\Julien\.android\build-cache\8d3ac76b6878bf6afd417f7c21a367e8f77f1b19\output\AndroidManifest.xml:25:5-20
+MERGED from [com.android.support:animated-vector-drawable:25.0.1] C:\Users\Julien\.android\build-cache\1f05987bb4d00e8275af26b55fa96923266c0d76\output\AndroidManifest.xml:22:5-20
+MERGED from [com.android.support:support-vector-drawable:25.0.1] C:\Users\Julien\.android\build-cache\ca0ae4347103d5a5fae1c05a0d15abce3c25b44c\output\AndroidManifest.xml:23:5-20
+MERGED from [com.android.support:transition:25.0.1] C:\Users\Julien\.android\build-cache\4207c65cba586f52e10f491c3775b38ee3e17146\output\AndroidManifest.xml:22:5-20
+MERGED from [com.android.support:support-v4:25.0.1] C:\Users\Julien\.android\build-cache\b5a0c22ad5240897f4a6e8710246cd45e4ef98f3\output\AndroidManifest.xml:25:5-20
+MERGED from [com.android.support:support-fragment:25.0.1] C:\Users\Julien\.android\build-cache\8f60747856b7c9b17424e76aa878e57c9aecb849\output\AndroidManifest.xml:25:5-20
+MERGED from [com.android.support:support-media-compat:25.0.1] C:\Users\Julien\.android\build-cache\4e307c289a0706dc67ae771de118a651a03b4a97\output\AndroidManifest.xml:25:5-20
+MERGED from [com.android.support:support-core-ui:25.0.1] C:\Users\Julien\.android\build-cache\2ea0b9cd777e4903e43905565ff6959a3fdf18c0\output\AndroidManifest.xml:25:5-20
+MERGED from [com.android.support:support-core-utils:25.0.1] C:\Users\Julien\.android\build-cache\5af10743cbf61bc8a3194bc85a2689c1ed9588d7\output\AndroidManifest.xml:25:5-20
+MERGED from [com.android.support:support-compat:25.0.1] C:\Users\Julien\.android\build-cache\ba113df91f8ef8b803e6de1bc41b6a6db153d760\output\AndroidManifest.xml:25:5-20
+	android:label
+		ADDED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml:11:9-36
+	android:allowBackup
+		ADDED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml:10:15-41
+	android:icon
+		ADDED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml:12:9-42
+	android:theme
+		ADDED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml:13:9-40
+activity#com.my.newproject.MainActivity
+ADDED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml:15:4-25:15
+	android:screenOrientation
+		ADDED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml:18:5-41
+	android:label
+		ADDED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml:19:17-42
+	android:configChanges
+		ADDED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml:17:5-51
+	android:name
+		ADDED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml:16:5-33
+activity#com.my.newproject.SettingsActivity
+ADDED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml:26:4-29:43
+	android:screenOrientation
+		ADDED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml:28:5-41
+	android:label
+		ADDED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml:29:17-41
+	android:configChanges
+		ADDED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml:27:38-84
+	android:name
+		ADDED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml:27:5-37
+activity#com.my.newproject.MenuActivity
+ADDED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml:30:9-37:38
+	android:screenOrientation
+		ADDED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml:32:13-49
+	android:configChanges
+		ADDED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml:31:42-88
+	android:name
+		ADDED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml:31:13-41
+intent-filter#android.intent.action.MAIN+android.intent.category.LAUNCHER
+ADDED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml:34:9-37:25
+action#android.intent.action.MAIN
+ADDED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml:35:13-64
+	android:name
+		ADDED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml:35:21-62
+category#android.intent.category.LAUNCHER
+ADDED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml:36:13-72
+	android:name
+		ADDED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml:36:23-70
+uses-sdk
+INJECTED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
+MERGED from [com.android.support:cardview-v7:25.3.1] C:\Users\Julien\.android\build-cache\15d239f68d62a446102f6ecb161621e6b3ebb49d\output\AndroidManifest.xml:20:5-43
+MERGED from [com.android.support.constraint:constraint-layout:1.0.2] C:\Users\Julien\.android\build-cache\cd01e6842f8c96fb0d2d6783c012a8736845d36e\output\AndroidManifest.xml:5:5-7:41
+MERGED from [com.android.support:design:25.0.1] C:\Users\Julien\.android\build-cache\3a461e9b8a947123e81f1d4c5645825f18d72ae2\output\AndroidManifest.xml:21:5-23:62
+MERGED from [com.android.support:appcompat-v7:25.0.1] C:\Users\Julien\.android\build-cache\8d3ac76b6878bf6afd417f7c21a367e8f77f1b19\output\AndroidManifest.xml:21:5-23:78
+MERGED from [com.android.support:animated-vector-drawable:25.0.1] C:\Users\Julien\.android\build-cache\1f05987bb4d00e8275af26b55fa96923266c0d76\output\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-vector-drawable:25.0.1] C:\Users\Julien\.android\build-cache\ca0ae4347103d5a5fae1c05a0d15abce3c25b44c\output\AndroidManifest.xml:21:5-43
+MERGED from [com.android.support:recyclerview-v7:25.0.1] C:\Users\Julien\.android\build-cache\8c36e9dc35f3e98d6a28449677f1f0233517a199\output\AndroidManifest.xml:20:5-43
+MERGED from [com.android.support:transition:25.0.1] C:\Users\Julien\.android\build-cache\4207c65cba586f52e10f491c3775b38ee3e17146\output\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-v4:25.0.1] C:\Users\Julien\.android\build-cache\b5a0c22ad5240897f4a6e8710246cd45e4ef98f3\output\AndroidManifest.xml:21:5-23:54
+MERGED from [com.android.support:support-fragment:25.0.1] C:\Users\Julien\.android\build-cache\8f60747856b7c9b17424e76aa878e57c9aecb849\output\AndroidManifest.xml:21:5-23:60
+MERGED from [com.android.support:support-media-compat:25.0.1] C:\Users\Julien\.android\build-cache\4e307c289a0706dc67ae771de118a651a03b4a97\output\AndroidManifest.xml:21:5-23:63
+MERGED from [com.android.support:support-core-ui:25.0.1] C:\Users\Julien\.android\build-cache\2ea0b9cd777e4903e43905565ff6959a3fdf18c0\output\AndroidManifest.xml:21:5-23:58
+MERGED from [com.android.support:support-core-utils:25.0.1] C:\Users\Julien\.android\build-cache\5af10743cbf61bc8a3194bc85a2689c1ed9588d7\output\AndroidManifest.xml:21:5-23:61
+MERGED from [com.android.support:support-compat:25.0.1] C:\Users\Julien\.android\build-cache\ba113df91f8ef8b803e6de1bc41b6a6db153d760\output\AndroidManifest.xml:21:5-23:58
+	tools:overrideLibrary
+		ADDED from [com.android.support:design:25.0.1] C:\Users\Julien\.android\build-cache\3a461e9b8a947123e81f1d4c5645825f18d72ae2\output\AndroidManifest.xml:23:9-59
+	android:targetSdkVersion
+		INJECTED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml
+		INJECTED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml
+		INJECTED from D:\OneDrive\Programmation\Inner Pulse\app\src\main\AndroidManifest.xml
+meta-data#android.support.VERSION
+ADDED from [com.android.support:cardview-v7:25.3.1] C:\Users\Julien\.android\build-cache\15d239f68d62a446102f6ecb161621e6b3ebb49d\output\AndroidManifest.xml:22:5-24:34
+	android:value
+		ADDED from [com.android.support:cardview-v7:25.3.1] C:\Users\Julien\.android\build-cache\15d239f68d62a446102f6ecb161621e6b3ebb49d\output\AndroidManifest.xml:24:9-31
+	android:name
+		ADDED from [com.android.support:cardview-v7:25.3.1] C:\Users\Julien\.android\build-cache\15d239f68d62a446102f6ecb161621e6b3ebb49d\output\AndroidManifest.xml:23:9-47

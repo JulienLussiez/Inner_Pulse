@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="true"
+        jar="C:\Users\Julien\.android\build-cache\4e307c289a0706dc67ae771de118a651a03b4a97\output\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.0"
+        sha1="6a1479afe9f1b3645e1cd9a87318976893472818">
+        <dex dex="D:\OneDrive\Programmation\Inner Pulse\app\build\intermediates\transforms\dex\debug\folders\1000\10\classes_9f6755b3f967915d2a881ccce4434cb3c1ff5b42\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Julien\.android\build-cache\8f60747856b7c9b17424e76aa878e57c9aecb849\output\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.0"
+        sha1="26c6eef571592c91f29e56fda0bac73321de0c92">
+        <dex dex="D:\OneDrive\Programmation\Inner Pulse\app\build\intermediates\transforms\dex\debug\folders\1000\10\classes_7e52c65897f3212c80073ebb76e6863202376e57\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Julien\.android\build-cache\5af10743cbf61bc8a3194bc85a2689c1ed9588d7\output\jars\libs\internal_impl-25.0.1.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.0"
+        sha1="c5b7145fb34779b6639147b8f2f8dd77c0db771b">
+        <dex dex="D:\OneDrive\Programmation\Inner Pulse\app\build\intermediates\transforms\dex\debug\folders\1000\10\internal_impl-25.0.1_02ef56865102622db2f2db188b8238735d6dcbd8\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Julien\.android\build-cache\4207c65cba586f52e10f491c3775b38ee3e17146\output\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.0"
+        sha1="c1b6ab157e8e12cb08b9ee82bb5e3c5d22632eb3">
+        <dex dex="D:\OneDrive\Programmation\Inner Pulse\app\build\intermediates\transforms\dex\debug\folders\1000\10\classes_c25cbca649573fafcefa7a713f5f8b5af9069e12\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Julien\.android\build-cache\ba113df91f8ef8b803e6de1bc41b6a6db153d760\output\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.0"
+        sha1="51eba4a4dd73044f90a9d58dd7ca34adbebfcf4e">
+        <dex dex="D:\OneDrive\Programmation\Inner Pulse\app\build\intermediates\transforms\dex\debug\folders\1000\10\classes_bd487f6a0b8be9dfcc4819709725bc1ac8b27283\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Julien\.android\build-cache\8c36e9dc35f3e98d6a28449677f1f0233517a199\output\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.0"
+        sha1="297d4bcf6ed4e747a1bf7d0d094a2d911a8d3a8e">
+        <dex dex="D:\OneDrive\Programmation\Inner Pulse\app\build\intermediates\transforms\dex\debug\folders\1000\10\classes_b331cbf06f49d5fbe483b88741fb80233431e420\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Julien\.android\build-cache\15d239f68d62a446102f6ecb161621e6b3ebb49d\output\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.0"
+        sha1="914f5d3e3ace66080e59613708f06d129a222e25">
+        <dex dex="D:\OneDrive\Programmation\Inner Pulse\app\build\intermediates\transforms\dex\debug\folders\1000\10\classes_472136397150279a9d8cd353240f789a537f1b9b\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="D:\OneDrive\Programmation\Inner Pulse\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.0"
+        sha1="05598f53054e6a4266fb8db113a164b8276d5de7">
+        <dex dex="D:\OneDrive\Programmation\Inner Pulse\app\build\intermediates\transforms\dex\debug\folders\1000\10000\instant-run-bootstrap_e1bd422484bdee9f04aa969f04761f22e544de97\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Julien\.android\build-cache\ca0ae4347103d5a5fae1c05a0d15abce3c25b44c\output\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.0"
+        sha1="b24e1c688744078e1fa833ffadf696794761bbe5">
+        <dex dex="D:\OneDrive\Programmation\Inner Pulse\app\build\intermediates\transforms\dex\debug\folders\1000\10\classes_dd59547f061b65c8512d1cd0942894853cabe96a\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Julien\.android\build-cache\1f05987bb4d00e8275af26b55fa96923266c0d76\output\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.0"
+        sha1="772bed2d992b67b9d0327f766cc95cd63031dcd3">
+        <dex dex="D:\OneDrive\Programmation\Inner Pulse\app\build\intermediates\transforms\dex\debug\folders\1000\10\classes_02461d2b262cdc1cd40cd7c98ee71fd97bee3f04\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Julien\.android\build-cache\3a461e9b8a947123e81f1d4c5645825f18d72ae2\output\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.0"
+        sha1="3b236883e0df6002cabb01ce57d00a5b1e5de610">
+        <dex dex="D:\OneDrive\Programmation\Inner Pulse\app\build\intermediates\transforms\dex\debug\folders\1000\10\classes_4e2631dd84d53c9468833341c0a313e1e1e92adf\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Julien\.android\build-cache\8d3ac76b6878bf6afd417f7c21a367e8f77f1b19\output\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.0"
+        sha1="f7ac4b327fdb9e2ee386f5adc46164927658de4b">
+        <dex dex="D:\OneDrive\Programmation\Inner Pulse\app\build\intermediates\transforms\dex\debug\folders\1000\10\classes_2035bb076c02d0c44d829acc3c2a18429ec2b57b\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Julien\.android\build-cache\ba113df91f8ef8b803e6de1bc41b6a6db153d760\output\jars\libs\internal_impl-25.0.1.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.0"
+        sha1="3af8cc51ef7088e56f132780da8c0bd858b6a6ad">
+        <dex dex="D:\OneDrive\Programmation\Inner Pulse\app\build\intermediates\transforms\dex\debug\folders\1000\10\internal_impl-25.0.1_40c9937b541bc8a6a143984ddfa3b603f4c4cd09\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Julien\.android\build-cache\4e307c289a0706dc67ae771de118a651a03b4a97\output\jars\libs\internal_impl-25.0.1.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.0"
+        sha1="f83b00041ecfba705603fec40363416c7de69719">
+        <dex dex="D:\OneDrive\Programmation\Inner Pulse\app\build\intermediates\transforms\dex\debug\folders\1000\10\internal_impl-25.0.1_6f47d147aec2e698eeb850e97e10723cbaa9f1a4\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="D:\OneDrive\Programmation\Inner Pulse\app\build\intermediates\incremental-runtime-classes\debug\instant-run.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.0"
+        sha1="caff8e51a24901cfc9cd7e1cf83d84f4cb0c103b">
+        <dex dex="D:\OneDrive\Programmation\Inner Pulse\app\build\intermediates\transforms\dex\debug\folders\1000\10000\instant-run_7db306af927afb03a071227ae0b196d87e197d38\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Julien\.android\build-cache\5af10743cbf61bc8a3194bc85a2689c1ed9588d7\output\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.0"
+        sha1="00d4c8eebf2b681073c72a26bd0849549e51c7cb">
+        <dex dex="D:\OneDrive\Programmation\Inner Pulse\app\build\intermediates\transforms\dex\debug\folders\1000\10\classes_843885aedd443ea4d8fe7ded2001b0f0a17200ad\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Julien\.android\build-cache\8f60747856b7c9b17424e76aa878e57c9aecb849\output\jars\libs\internal_impl-25.0.1.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.0"
+        sha1="c0bd6ffb002a85b5e7cad29f8558d1cc59539679">
+        <dex dex="D:\OneDrive\Programmation\Inner Pulse\app\build\intermediates\transforms\dex\debug\folders\1000\10\internal_impl-25.0.1_f0da863391bbd246acc75039de0b00d2f8427e24\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Julien\.android\build-cache\b5a0c22ad5240897f4a6e8710246cd45e4ef98f3\output\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.0"
+        sha1="d7c42c80f6509b9ea4db28ca7859ffae08ec5741">
+        <dex dex="D:\OneDrive\Programmation\Inner Pulse\app\build\intermediates\transforms\dex\debug\folders\1000\10\classes_14feb04e25c2aa80efafaa518a950c8dd0219bce\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Julien\.android\build-cache\2ea0b9cd777e4903e43905565ff6959a3fdf18c0\output\jars\libs\internal_impl-25.0.1.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.0"
+        sha1="e5343c9d19cb19ff55f6b268c7f3fe8c9d224f6f">
+        <dex dex="D:\OneDrive\Programmation\Inner Pulse\app\build\intermediates\transforms\dex\debug\folders\1000\10\internal_impl-25.0.1_d817c874333a83f26af70f0f01d101da9265258e\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Julien\.android\build-cache\2ea0b9cd777e4903e43905565ff6959a3fdf18c0\output\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.0"
+        sha1="bc7e99e8d0fc279a05aa91378530f467ad62d443">
+        <dex dex="D:\OneDrive\Programmation\Inner Pulse\app\build\intermediates\transforms\dex\debug\folders\1000\10\classes_49828dfb549e28364c3610596c8bfb7a3375894a\classes.dex" />
+    </item>
+
+</items>
