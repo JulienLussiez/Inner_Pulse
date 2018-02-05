@@ -43,6 +43,12 @@ public class SettingsActivity extends AppCompatActivity {
     private TextView repetition;
     private EditText repetition_edit;
 	private Switch im_switch;
+	private TextView send_start;
+	private EditText send_start_edit;
+	private TextView send_start_text;
+	private TextView send_end;
+	private EditText send_end_edit;
+	private TextView send_end_text;
 
 	private String text = "";
 
@@ -82,6 +88,12 @@ public class SettingsActivity extends AppCompatActivity {
         repetition = (TextView) findViewById(R.id.repetition);
         repetition_edit = (EditText) findViewById(R.id.repetition_edit);
 		im_switch = (Switch) findViewById(R.id.im_switch);
+		send_start_text = (TextView) findViewById(R.id.send_start_text);
+		send_start = (TextView) findViewById(R.id.send_start);
+		send_start_edit = (EditText) findViewById(R.id.send_start_edit);
+		send_end_text = (TextView) findViewById(R.id.send_end_text);
+		send_end = (TextView) findViewById(R.id.send_end);
+		send_end_edit = (EditText) findViewById(R.id.send_end_edit);
 
 
 		f = getSharedPreferences("Settings", Activity.MODE_PRIVATE);
@@ -175,6 +187,32 @@ public class SettingsActivity extends AppCompatActivity {
 				}
 			}
 		});
+		send_start_edit.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void beforeTextChanged(CharSequence _text, int _start, int _count, int _after) {
+			}
+			@Override
+			public void onTextChanged(final CharSequence _charSeq, int _start, int _before, int _count) {
+				send_start.setText(_charSeq.toString());
+				f.edit().putString("send_start", _charSeq.toString()).commit();
+			}
+			@Override
+			public void afterTextChanged(Editable _text) {
+			}
+		});
+		send_end_edit.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void beforeTextChanged(CharSequence _text, int _start, int _count, int _after) {
+			}
+			@Override
+			public void onTextChanged(final CharSequence _charSeq, int _start, int _before, int _count) {
+				send_end.setText(_charSeq.toString());
+				f.edit().putString("send_end", _charSeq.toString()).commit();
+			}
+			@Override
+			public void afterTextChanged(Editable _text) {
+			}
+		});
 
 	}
 
@@ -185,6 +223,8 @@ public class SettingsActivity extends AppCompatActivity {
         audible_beat.setText(f.getString("audible_beat", ""));
         quiet_beat.setText(f.getString("quiet_beat", ""));
         repetition.setText(f.getString("repetition", ""));
+		send_start.setText(f.getString("send_start", ""));
+		send_end.setText(f.getString("send_end", ""));
 		if (!f.getString("isChecked", "").equals("")) {
 			if (Double.parseDouble(f.getString("isChecked", "")) == 1) {
 				im_switch.setChecked(true);
@@ -204,6 +244,8 @@ public class SettingsActivity extends AppCompatActivity {
                 intent.putExtra("audible_beat", audible_beat.getText().toString());
                 intent.putExtra("quiet_beat", quiet_beat.getText().toString());
                 intent.putExtra("repetition", repetition.getText().toString());
+				intent.putExtra("send_start", send_start.getText().toString());
+				intent.putExtra("send_end", send_end.getText().toString());
 				startActivity(intent);
 				finish();
 	}
