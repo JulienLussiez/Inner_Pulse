@@ -58,8 +58,8 @@
         <activity
             android:name="com.my.newproject.DataActivity"
             android:label="Data"
-            android:screenOrientation="portrait" >
-        </activity>
+            android:screenOrientation="portrait" />
+        <activity android:name="com.my.newproject.ChartActivity" />
 
         <provider
             android:name="com.android.tools.ir.server.InstantRunContentProvider"

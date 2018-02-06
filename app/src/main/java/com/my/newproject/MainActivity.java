@@ -3,6 +3,7 @@ package com.my.newproject;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
@@ -23,6 +24,8 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -136,6 +139,8 @@ public class MainActivity extends AppCompatActivity {
     private boolean countdownIsRunning = false;
     private boolean canTap = false;
     private int fab_play = 0;
+    int j2 = 0;
+    int k2 = 0;
 
     private ArrayList<String> latencySelection = new ArrayList<String>();
     private ArrayList<Double> asynList = new ArrayList<Double>();
@@ -175,7 +180,17 @@ public class MainActivity extends AppCompatActivity {
     private float redSpanRight = 0;
     private ArrayList<ProgressItem> progressItemList;
     private ProgressItem mProgressItem;
+    private DescriptiveStatistics stats;
+    private double perSD;
+    private double perCV;
+    private double perACF;
 
+    double x[];
+    double y[];
+    private int slow;
+    private int good;
+    private int fast;
+    private int nChart;
 
 
     @Override
@@ -652,40 +667,46 @@ public class MainActivity extends AppCompatActivity {
                             f.edit().putString(Integer.toString((int) numTry) + "title", username + " " + Settings.getString("bpm", "") + "bpm " + ft.format(date)).commit();
                             f.edit().putString(Integer.toString((int) numTry), perListString).commit();
                             f.edit().putString(Double.toString(numTry), String.valueOf((long)(perList.size()))).commit();
-                            if (tapSoundList.contains(a)){
-                                _makeSyncContList();
-                                _syncRepPercentage();
-                                _contRepPercentage();
-                                _accuracyPercentage2(asynList);
-                                _accuracyPercentage2(audibleBeatsList);
-                                _accuracyPercentage2(quietBeatsList);
-                                _meanPeriod(perList);
-                                _feedbackPost();
-                                if (beatCounter == 0) {
-                                    _storeList2(asynList, "T");
-                                    _storeList2(audibleBeatsList, "S");
-                                    _storeList2(quietBeatsList, "C");
-                                    _storeList2(accuracyPercentList, "A");
+                            _statistics();
+                            _feedbackPostPer();
+                            if (beatCounter == 0) {
                                     numTry++;
                                     f.edit().putString("numTry", String.valueOf((long) (numTry))).commit();
-                                    _updateProgress();
                                 }
-                            }
-                            else if (!asynList.isEmpty()) {
-                                _accuracyPercentage2(asynList);
-                                _meanPeriod(perList);
-                                accuracyPercent = "Accuracy : ".concat(String.valueOf((long)(accuracyPercentList.get((int)(0)).doubleValue())).concat("%"));
-                                d.setTitle("Feedback");
-                                d.setMessage(accuracyPercent);
-                                d.create().show();
-                                if (beatCounter == 0) {
-                                    _storeList2(asynList, "T");
-                                    _storeList2(accuracyPercentList, "A");
-                                    numTry++;
-                                    f.edit().putString("numTry", String.valueOf((long) (numTry))).commit();
-                                    _updateProgress();
-                                }
-                            }
+//                            if (tapSoundList.contains(a)){
+//                                _makeSyncContList();
+//                                _syncRepPercentage();
+//                                _contRepPercentage();
+//                                _accuracyPercentage2(asynList);
+//                                _accuracyPercentage2(audibleBeatsList);
+//                                _accuracyPercentage2(quietBeatsList);
+////                                _meanPeriod(perList);
+//                                _feedbackPost();
+//                                if (beatCounter == 0) {
+//                                    _storeList2(asynList, "T");
+//                                    _storeList2(audibleBeatsList, "S");
+//                                    _storeList2(quietBeatsList, "C");
+//                                    _storeList2(accuracyPercentList, "A");
+//                                    numTry++;
+//                                    f.edit().putString("numTry", String.valueOf((long) (numTry))).commit();
+//                                    _updateProgress();
+//                                }
+//                            }
+//                            else if (!asynList.isEmpty()) {
+//                                _accuracyPercentage2(asynList);
+//                                _meanPeriod(perList);
+//                                accuracyPercent = "Accuracy : ".concat(String.valueOf((long)(accuracyPercentList.get((int)(0)).doubleValue())).concat("%"));
+//                                d.setTitle("Feedback");
+//                                d.setMessage(accuracyPercent);
+//                                d.create().show();
+//                                if (beatCounter == 0) {
+//                                    _storeList2(asynList, "T");
+//                                    _storeList2(accuracyPercentList, "A");
+//                                    numTry++;
+//                                    f.edit().putString("numTry", String.valueOf((long) (numTry))).commit();
+//                                    _updateProgress();
+//                                }
+//                            }
                         }
                     }
                 });
@@ -895,6 +916,19 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    private void _statistics() {
+        stats = new DescriptiveStatistics();
+        for( int i = 0; i < perList.size(); i++) {
+            stats.addValue(perList.get(i));
+        }
+        perMean = Math.round(stats.getMean());
+        perSD = Math.round(stats.getStandardDeviation());
+        perCV = Math.round(100*(perSD/perMean));
+        Log.d("mean", Double.toString(perMean));
+        period_mean.setText(Double.toString(perMean));
+
     }
 
     private void _setColors () {
@@ -1135,6 +1169,76 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void _feedbackPostPer (){
+        slow = 0;
+        good = 0;
+        fast = 0;
+
+        String tendency_fb;
+
+        for(i = 0; i < perList.size(); i++){
+            if ((beatInterval/1000 < perList.get((int)i)) && (perList.get((int)i) < beatInterval/1.1) || (perList.get((int)i) == beatInterval/1000)) {
+                fast++;
+            }
+            else {
+                if ((beatInterval/1.1 < perList.get((int)i)) && (perList.get((int)i) < beatInterval/1.05) || (perList.get((int)i) == beatInterval/1.1)) {
+                    fast++;
+                }
+                else {
+                    if ((beatInterval/1.05 < perList.get((int)i)) && (perList.get((int)i) < beatInterval/0.95) || (perList.get((int)i) == beatInterval/1.05)) {
+                        good++;
+                    }
+                    else {
+                        if ((beatInterval/0.95 < perList.get((int)i)) && (perList.get((int)i) < beatInterval/0.85) || (perList.get((int)i) == beatInterval/0.95)) {
+                            slow++;
+                        }
+                        else {
+                            if ((beatInterval/0.85 < perList.get((int)i)) && (perList.get((int)i) < beatInterval/0.1) || (perList.get((int)i) == beatInterval/0.85)) {
+                                slow++;
+                            }
+                            else {
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+        if(fast > slow && fast > good || fast == good){
+            tendency_fb = "Tendency to speed up : slow down";
+        }
+        else if (slow > fast && slow > good || slow == good) {
+            tendency_fb = "Tendency to slow down : speed up";
+        }
+        else if (slow == fast) {
+            tendency_fb = "Similar tendency to slow down/speed up : find your pace and stay focus to stabilize it";
+        }
+        else {
+            tendency_fb = "Stable timing : keep it up";
+        }
+        String mean_fb = "Mean Velocity : " + String.format("%.0f", (1000/perMean) * 60) + " bpm";
+        String sd_fb = "Variability :  " + "± " + String.format("%.0f", (perSD/perMean) * 60) + " bpm";
+
+
+
+        d.setTitle("Feedback");
+        d.setMessage(mean_fb + "\n" + sd_fb + "\n\n" + tendency_fb);
+
+        d.setPositiveButton("See Chart", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                nChart = (int) numTry - 1;
+                f.edit().putString("nChart",Integer.toString(nChart)).commit();
+                intent.setClass(getApplicationContext(), ChartActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        d.create().show();
+    }
+
     private void _feedbackPost () {
         if (perfectSyncPercent > 75) {
             feedbackSyncPost = "In time ".concat(String.valueOf((long)(perfectSyncPercent)).concat("% of time during synchronization phase : Well Done. \n"));
@@ -1207,7 +1311,7 @@ public class MainActivity extends AppCompatActivity {
                 iAsynPercentage++;
             }
             perMean = perSum / _list.size();
-            period_mean.setText(Double.toString(perMean));
+//            period_mean.setText(Double.toString(perMean));
         }
     }
 
