@@ -3,12 +3,10 @@ package com.my.newproject;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.SoundPool;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.design.widget.FloatingActionButton;
@@ -26,7 +24,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -268,25 +265,25 @@ public class MainActivity extends AppCompatActivity {
                     timer.cancel();
                 finish();
                 return true;
-            case R.id.save:
-//                _makeFile(startMF, startMF, endMF);
-				intent.setAction(Intent.ACTION_VIEW);
-				intent.setData(Uri.parse("mailto:lussiez.julien@gmail.com"));
-				intent.putExtra("subject", username + latency);
-				intent.putExtra("body", perListString);
-				startActivity(intent);
-                String filename = "data.txt";
-                String string = perListString;
-                FileOutputStream outputStream;
-
-                try {
-                    outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
-                    outputStream.write(string.getBytes());
-                    outputStream.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return true;
+//            case R.id.save:
+////                _makeFile(startMF, startMF, endMF);
+//				intent.setAction(Intent.ACTION_VIEW);
+//				intent.setData(Uri.parse("mailto:lussiez.julien@gmail.com"));
+//				intent.putExtra("subject", username + latency);
+//				intent.putExtra("body", perListString);
+//				startActivity(intent);
+//                String filename = "data.txt";
+//                String string = perListString;
+//                FileOutputStream outputStream;
+//
+//                try {
+//                    outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
+//                    outputStream.write(string.getBytes());
+//                    outputStream.close();
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//                return true;
             case R.id.about:
                 d.setTitle("About");
                 d.setMessage("This application is made to practice internal timing. \n\nMade by Julien Lussiez");
@@ -346,13 +343,14 @@ public class MainActivity extends AppCompatActivity {
                         period = (tapTime - beatTime) - latency;
 
                         _makePeriod();
-                        _makePeriodList();
+//                        _makePeriodList();
                         _makeAsynList();
                         _makeSoundTapList();
 //                        _feedback();
                         _feedbackPer();
 
                         if (firstTapInterval == 1){
+                            _makePeriodList();
                             feedback_per.setProgress(((int)beatInterval*2) - (int)periodMs);
                             seekbar.setProgress(((int)beatInterval*2) - (int)periodMs);
                         }
@@ -1136,6 +1134,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
     private void _feedbackPost () {
         if (perfectSyncPercent > 75) {
             feedbackSyncPost = "In time ".concat(String.valueOf((long)(perfectSyncPercent)).concat("% of time during synchronization phase : Well Done. \n"));

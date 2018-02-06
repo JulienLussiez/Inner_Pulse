@@ -1,38 +1,39 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Users\Julien\Desktop\Inner Pulse 2\app\src\main\AndroidManifest.xml:2:1-49:12
-INJECTED from C:\Users\Julien\Desktop\Inner Pulse 2\app\src\main\AndroidManifest.xml:2:1-49:12
-INJECTED from C:\Users\Julien\Desktop\Inner Pulse 2\app\src\main\AndroidManifest.xml:2:1-49:12
-INJECTED from C:\Users\Julien\Desktop\Inner Pulse 2\app\src\main\AndroidManifest.xml:2:1-49:12
+ADDED from C:\Users\Julien\Desktop\Inner Pulse 2\app\src\main\AndroidManifest.xml:2:1-53:12
+INJECTED from C:\Users\Julien\Desktop\Inner Pulse 2\app\src\main\AndroidManifest.xml:2:1-53:12
+INJECTED from C:\Users\Julien\Desktop\Inner Pulse 2\app\src\main\AndroidManifest.xml:2:1-53:12
+INJECTED from C:\Users\Julien\Desktop\Inner Pulse 2\app\src\main\AndroidManifest.xml:2:1-53:12
 MERGED from [com.android.support:cardview-v7:25.3.1] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\cardview-v7-25.3.1.aar\1c035d37d21f86324666d87379479a38\AndroidManifest.xml:17:1-28:12
 MERGED from [com.android.support:design:25.0.1] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\design-25.0.1.aar\51a23840fb422c21843266db5bc56e49\AndroidManifest.xml:17:1-27:12
 MERGED from [com.android.support:appcompat-v7:27.0.2] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\appcompat-v7-27.0.2.aar\e725576a5bffa3d67335abf013082095\AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support.constraint:constraint-layout:1.0.2] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\constraint-layout-1.0.2.aar\d68e2b2b87717caaefc0444de31f9bd8\AndroidManifest.xml:2:1-11:12
+MERGED from [com.jjoe64:graphview:4.2.1] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\graphview-4.2.1.aar\de5d9015320788db12197cbff0da953f\AndroidManifest.xml:2:1-14:12
 MERGED from [com.android.support:recyclerview-v7:25.0.1] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\recyclerview-v7-25.0.1.aar\94bb6eba7f6c2916a3ffbcf4f842fc19\AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support:animated-vector-drawable:27.0.2] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\animated-vector-drawable-27.0.2.aar\b3b1f7ff8c5e297eda856b909d03fa81\AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support:support-vector-drawable:27.0.2] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\support-vector-drawable-27.0.2.aar\c2fbd74530be29578adf6d22452ab3d2\AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support:transition:25.0.1] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\transition-25.0.1.aar\9cf006f2e41880af8936e4573fd0cb5f\AndroidManifest.xml:17:1-24:12
 MERGED from [com.android.support:support-v4:25.0.1] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\support-v4-25.0.1.aar\04fb148b39c55877dd0729ed39ca6eee\AndroidManifest.xml:17:1-27:12
-MERGED from [com.android.support:support-fragment:27.0.2] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\support-fragment-27.0.2.aar\0550c4d399f278b9fb5444785dce5e00\AndroidManifest.xml:17:1-22:12
-MERGED from [com.android.support:support-core-utils:27.0.2] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\support-core-utils-27.0.2.aar\43bc91995f18e2ebc69ab58fb4e846e4\AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support:support-media-compat:25.0.1] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\support-media-compat-25.0.1.aar\03ffa8236a4294b6380a335fd4775d17\AndroidManifest.xml:17:1-27:12
+MERGED from [com.android.support:support-fragment:27.0.2] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\support-fragment-27.0.2.aar\0550c4d399f278b9fb5444785dce5e00\AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support:support-core-ui:27.0.2] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\support-core-ui-27.0.2.aar\9389b255611525d8ff2e3483f8bafce8\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:support-core-utils:27.0.2] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\support-core-utils-27.0.2.aar\43bc91995f18e2ebc69ab58fb4e846e4\AndroidManifest.xml:17:1-22:12
 MERGED from [com.android.support:support-compat:27.0.2] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\support-compat-27.0.2.aar\3b60f11b972e7618d47cb35f3b297e0b\AndroidManifest.xml:17:1-22:12
 MERGED from [android.arch.lifecycle:runtime:1.0.3] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\runtime-1.0.3.aar\5f2b21559471610ed18877e055ef688c\AndroidManifest.xml:17:1-24:12
-INJECTED from C:\Users\Julien\Desktop\Inner Pulse 2\app\src\main\AndroidManifest.xml:2:1-49:12
-INJECTED from C:\Users\Julien\Desktop\Inner Pulse 2\app\src\main\AndroidManifest.xml:2:1-49:12
-INJECTED from C:\Users\Julien\Desktop\Inner Pulse 2\app\src\main\AndroidManifest.xml:2:1-49:12
+INJECTED from C:\Users\Julien\Desktop\Inner Pulse 2\app\src\main\AndroidManifest.xml:2:1-53:12
+INJECTED from C:\Users\Julien\Desktop\Inner Pulse 2\app\src\main\AndroidManifest.xml:2:1-53:12
+INJECTED from C:\Users\Julien\Desktop\Inner Pulse 2\app\src\main\AndroidManifest.xml:2:1-53:12
 	package
 		ADDED from C:\Users\Julien\Desktop\Inner Pulse 2\app\src\main\AndroidManifest.xml:3:5-32
 		INJECTED from C:\Users\Julien\Desktop\Inner Pulse 2\app\src\main\AndroidManifest.xml
 		INJECTED from C:\Users\Julien\Desktop\Inner Pulse 2\app\src\main\AndroidManifest.xml
 	android:versionName
 		INJECTED from C:\Users\Julien\Desktop\Inner Pulse 2\app\src\main\AndroidManifest.xml
-		ADDED from C:\Users\Julien\Desktop\Inner Pulse 2\app\src\main\AndroidManifest.xml:2:1-49:12
+		ADDED from C:\Users\Julien\Desktop\Inner Pulse 2\app\src\main\AndroidManifest.xml:2:1-53:12
 		INJECTED from C:\Users\Julien\Desktop\Inner Pulse 2\app\src\main\AndroidManifest.xml
 	android:versionCode
 		INJECTED from C:\Users\Julien\Desktop\Inner Pulse 2\app\src\main\AndroidManifest.xml
-		ADDED from C:\Users\Julien\Desktop\Inner Pulse 2\app\src\main\AndroidManifest.xml:2:1-49:12
+		ADDED from C:\Users\Julien\Desktop\Inner Pulse 2\app\src\main\AndroidManifest.xml:2:1-53:12
 		INJECTED from C:\Users\Julien\Desktop\Inner Pulse 2\app\src\main\AndroidManifest.xml
 	xmlns:android
 		ADDED from C:\Users\Julien\Desktop\Inner Pulse 2\app\src\main\AndroidManifest.xml:2:11-69
@@ -57,13 +58,15 @@ ADDED from C:\Users\Julien\Desktop\Inner Pulse 2\app\src\main\AndroidManifest.xm
 	android:name
 		ADDED from C:\Users\Julien\Desktop\Inner Pulse 2\app\src\main\AndroidManifest.xml:9:22-76
 application
-ADDED from C:\Users\Julien\Desktop\Inner Pulse 2\app\src\main\AndroidManifest.xml:11:5-47:19
+ADDED from C:\Users\Julien\Desktop\Inner Pulse 2\app\src\main\AndroidManifest.xml:11:5-51:19
 MERGED from [com.android.support:cardview-v7:25.3.1] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\cardview-v7-25.3.1.aar\1c035d37d21f86324666d87379479a38\AndroidManifest.xml:26:5-20
 MERGED from [com.android.support:cardview-v7:25.3.1] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\cardview-v7-25.3.1.aar\1c035d37d21f86324666d87379479a38\AndroidManifest.xml:26:5-20
 MERGED from [com.android.support:design:25.0.1] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\design-25.0.1.aar\51a23840fb422c21843266db5bc56e49\AndroidManifest.xml:25:5-20
 MERGED from [com.android.support:design:25.0.1] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\design-25.0.1.aar\51a23840fb422c21843266db5bc56e49\AndroidManifest.xml:25:5-20
 MERGED from [com.android.support.constraint:constraint-layout:1.0.2] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\constraint-layout-1.0.2.aar\d68e2b2b87717caaefc0444de31f9bd8\AndroidManifest.xml:9:5-20
 MERGED from [com.android.support.constraint:constraint-layout:1.0.2] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\constraint-layout-1.0.2.aar\d68e2b2b87717caaefc0444de31f9bd8\AndroidManifest.xml:9:5-20
+MERGED from [com.jjoe64:graphview:4.2.1] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\graphview-4.2.1.aar\de5d9015320788db12197cbff0da953f\AndroidManifest.xml:11:5-12:19
+MERGED from [com.jjoe64:graphview:4.2.1] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\graphview-4.2.1.aar\de5d9015320788db12197cbff0da953f\AndroidManifest.xml:11:5-12:19
 MERGED from [com.android.support:transition:25.0.1] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\transition-25.0.1.aar\9cf006f2e41880af8936e4573fd0cb5f\AndroidManifest.xml:22:5-20
 MERGED from [com.android.support:transition:25.0.1] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\transition-25.0.1.aar\9cf006f2e41880af8936e4573fd0cb5f\AndroidManifest.xml:22:5-20
 MERGED from [com.android.support:support-v4:25.0.1] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\support-v4-25.0.1.aar\04fb148b39c55877dd0729ed39ca6eee\AndroidManifest.xml:25:5-20
@@ -119,9 +122,13 @@ ADDED from C:\Users\Julien\Desktop\Inner Pulse 2\app\src\main\AndroidManifest.xm
 	android:name
 		ADDED from C:\Users\Julien\Desktop\Inner Pulse 2\app\src\main\AndroidManifest.xml:34:13-41
 activity#com.my.newproject.DataActivity
-ADDED from C:\Users\Julien\Desktop\Inner Pulse 2\app\src\main\AndroidManifest.xml:46:9-59
+ADDED from C:\Users\Julien\Desktop\Inner Pulse 2\app\src\main\AndroidManifest.xml:46:9-50:20
+	android:screenOrientation
+		ADDED from C:\Users\Julien\Desktop\Inner Pulse 2\app\src\main\AndroidManifest.xml:49:13-49
+	android:label
+		ADDED from C:\Users\Julien\Desktop\Inner Pulse 2\app\src\main\AndroidManifest.xml:48:13-33
 	android:name
-		ADDED from C:\Users\Julien\Desktop\Inner Pulse 2\app\src\main\AndroidManifest.xml:46:19-47
+		ADDED from C:\Users\Julien\Desktop\Inner Pulse 2\app\src\main\AndroidManifest.xml:47:13-41
 uses-sdk
 INJECTED from C:\Users\Julien\Desktop\Inner Pulse 2\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from C:\Users\Julien\Desktop\Inner Pulse 2\app\src\main\AndroidManifest.xml
@@ -134,6 +141,8 @@ MERGED from [com.android.support:appcompat-v7:27.0.2] C:\Users\Julien\.gradle\ca
 MERGED from [com.android.support:appcompat-v7:27.0.2] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\appcompat-v7-27.0.2.aar\e725576a5bffa3d67335abf013082095\AndroidManifest.xml:20:5-44
 MERGED from [com.android.support.constraint:constraint-layout:1.0.2] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\constraint-layout-1.0.2.aar\d68e2b2b87717caaefc0444de31f9bd8\AndroidManifest.xml:5:5-7:41
 MERGED from [com.android.support.constraint:constraint-layout:1.0.2] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\constraint-layout-1.0.2.aar\d68e2b2b87717caaefc0444de31f9bd8\AndroidManifest.xml:5:5-7:41
+MERGED from [com.jjoe64:graphview:4.2.1] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\graphview-4.2.1.aar\de5d9015320788db12197cbff0da953f\AndroidManifest.xml:7:5-9:41
+MERGED from [com.jjoe64:graphview:4.2.1] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\graphview-4.2.1.aar\de5d9015320788db12197cbff0da953f\AndroidManifest.xml:7:5-9:41
 MERGED from [com.android.support:recyclerview-v7:25.0.1] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\recyclerview-v7-25.0.1.aar\94bb6eba7f6c2916a3ffbcf4f842fc19\AndroidManifest.xml:20:5-43
 MERGED from [com.android.support:recyclerview-v7:25.0.1] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\recyclerview-v7-25.0.1.aar\94bb6eba7f6c2916a3ffbcf4f842fc19\AndroidManifest.xml:20:5-43
 MERGED from [com.android.support:animated-vector-drawable:27.0.2] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\animated-vector-drawable-27.0.2.aar\b3b1f7ff8c5e297eda856b909d03fa81\AndroidManifest.xml:20:5-44
@@ -144,14 +153,14 @@ MERGED from [com.android.support:transition:25.0.1] C:\Users\Julien\.gradle\cach
 MERGED from [com.android.support:transition:25.0.1] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\transition-25.0.1.aar\9cf006f2e41880af8936e4573fd0cb5f\AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:support-v4:25.0.1] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\support-v4-25.0.1.aar\04fb148b39c55877dd0729ed39ca6eee\AndroidManifest.xml:21:5-23:54
 MERGED from [com.android.support:support-v4:25.0.1] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\support-v4-25.0.1.aar\04fb148b39c55877dd0729ed39ca6eee\AndroidManifest.xml:21:5-23:54
-MERGED from [com.android.support:support-fragment:27.0.2] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\support-fragment-27.0.2.aar\0550c4d399f278b9fb5444785dce5e00\AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:support-fragment:27.0.2] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\support-fragment-27.0.2.aar\0550c4d399f278b9fb5444785dce5e00\AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:support-core-utils:27.0.2] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\support-core-utils-27.0.2.aar\43bc91995f18e2ebc69ab58fb4e846e4\AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:support-core-utils:27.0.2] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\support-core-utils-27.0.2.aar\43bc91995f18e2ebc69ab58fb4e846e4\AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:support-media-compat:25.0.1] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\support-media-compat-25.0.1.aar\03ffa8236a4294b6380a335fd4775d17\AndroidManifest.xml:21:5-23:63
 MERGED from [com.android.support:support-media-compat:25.0.1] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\support-media-compat-25.0.1.aar\03ffa8236a4294b6380a335fd4775d17\AndroidManifest.xml:21:5-23:63
+MERGED from [com.android.support:support-fragment:27.0.2] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\support-fragment-27.0.2.aar\0550c4d399f278b9fb5444785dce5e00\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-fragment:27.0.2] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\support-fragment-27.0.2.aar\0550c4d399f278b9fb5444785dce5e00\AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:support-core-ui:27.0.2] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\support-core-ui-27.0.2.aar\9389b255611525d8ff2e3483f8bafce8\AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:support-core-ui:27.0.2] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\support-core-ui-27.0.2.aar\9389b255611525d8ff2e3483f8bafce8\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-core-utils:27.0.2] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\support-core-utils-27.0.2.aar\43bc91995f18e2ebc69ab58fb4e846e4\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-core-utils:27.0.2] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\support-core-utils-27.0.2.aar\43bc91995f18e2ebc69ab58fb4e846e4\AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:support-compat:27.0.2] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\support-compat-27.0.2.aar\3b60f11b972e7618d47cb35f3b297e0b\AndroidManifest.xml:20:5-44
 MERGED from [com.android.support:support-compat:27.0.2] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\support-compat-27.0.2.aar\3b60f11b972e7618d47cb35f3b297e0b\AndroidManifest.xml:20:5-44
 MERGED from [android.arch.lifecycle:runtime:1.0.3] C:\Users\Julien\.gradle\caches\transforms-1\files-1.1\runtime-1.0.3.aar\5f2b21559471610ed18877e055ef688c\AndroidManifest.xml:20:5-22:41

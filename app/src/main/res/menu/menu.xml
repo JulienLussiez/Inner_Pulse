@@ -31,8 +31,8 @@
         android:title="Informations">
 
         <menu android:id="@+id/sub_menu">
-            <item android:id="@+id/save"
-                android:title="Send Data"   />
+            <!--<item android:id="@+id/save"-->
+                <!--android:title="Send Data"   />-->
 
             <item android:id="@+id/about"
                 android:title="About"  />

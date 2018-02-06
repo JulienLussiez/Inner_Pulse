@@ -55,7 +55,11 @@
             <!-- </intent-filter> -->
             />
         </activity>
-        <activity android:name="com.my.newproject.DataActivity" />
+        <activity
+            android:name="com.my.newproject.DataActivity"
+            android:label="Data"
+            android:screenOrientation="portrait" >
+        </activity>
     </application>
 
 </manifest>
