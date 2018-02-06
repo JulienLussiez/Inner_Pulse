@@ -27,8 +27,10 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -45,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private Button settings;
     private Button send;
     private Button about;
+    private TextView tempo_text;
     private TextView too_soon_red;
     private TextView too_soon_yellow;
     private TextView perfect_green;
@@ -63,9 +66,11 @@ public class MainActivity extends AppCompatActivity {
     private CustomSeekBar seekbar0;
 
 
+    private int inc = 0;
     private int startMF = 0;
     private int perCounter = 1;
     private int cd = 4;
+    private int firstTapInterval = 0;
     private double firstTap = 0;
     private double secondTap = 0;
     private double thirdTap = 0;
@@ -81,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
     private double latency = 0;
     private double i = 0;
     private String latencyString = "";
+    private String perListString = "";
     private double tapCounter = 0;
     private double beatInterval = 0;
     private double beatCounter = 0;
@@ -241,6 +247,13 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
 //            case R.id.action_back:
 //                return true;
+
+            case R.id.action_data:
+                intent.setClass(getApplicationContext(), DataActivity.class);
+                startActivity(intent);
+                finish();
+                return true;
+
             case R.id.action_settings:
                 intent.setClass(getApplicationContext(), SettingsActivity.class);
                 intent.putExtra("latency", getIntent().getStringExtra("latency"));
@@ -256,14 +269,14 @@ public class MainActivity extends AppCompatActivity {
                 finish();
                 return true;
             case R.id.save:
-                _makeFile(startMF, startMF, endMF);
+//                _makeFile(startMF, startMF, endMF);
 				intent.setAction(Intent.ACTION_VIEW);
 				intent.setData(Uri.parse("mailto:lussiez.julien@gmail.com"));
 				intent.putExtra("subject", username + latency);
-				intent.putExtra("body", data);
+				intent.putExtra("body", perListString);
 				startActivity(intent);
                 String filename = "data.txt";
-                String string = data;
+                String string = perListString;
                 FileOutputStream outputStream;
 
                 try {
@@ -307,6 +320,7 @@ public class MainActivity extends AppCompatActivity {
         period_ms = (TextView) findViewById(R.id.period_ms);
         period_mean = (TextView) findViewById(R.id.period_mean);
         feedback_per = (SeekBar) findViewById(R.id.feedback_per);
+        tempo_text = (TextView) findViewById(R.id.tempo);
 
         fAsyn = getSharedPreferences("fAsyn", Activity.MODE_PRIVATE);
         f = getSharedPreferences("settings", Activity.MODE_PRIVATE);
@@ -337,9 +351,12 @@ public class MainActivity extends AppCompatActivity {
                         _makeSoundTapList();
 //                        _feedback();
                         _feedbackPer();
-                        feedback_per.setProgress(((int)beatInterval*2) - (int)periodMs);
-                        seekbar.setProgress(((int)beatInterval*2) - (int)periodMs);
 
+                        if (firstTapInterval == 1){
+                            feedback_per.setProgress(((int)beatInterval*2) - (int)periodMs);
+                            seekbar.setProgress(((int)beatInterval*2) - (int)periodMs);
+                        }
+                        firstTapInterval = 1;
                     }
                 }
                 return false;
@@ -499,10 +516,12 @@ public class MainActivity extends AppCompatActivity {
                     combo = 0;
                     combo_text.setText("Combo : " + Integer.toString(combo));
                     beatCounter = ((audibleBeats + quietBeats) * multiplier)+4;
+                    firstTapInterval = 0;
                     j = 0;
                     perCounter = 1;
                     tapCounter = 0;
                     cd = 4;
+                    perListString = "";
                     asynList.clear();
                     perList.clear();
                     tapTimeList.clear();
@@ -630,6 +649,11 @@ public class MainActivity extends AppCompatActivity {
                             tap.setText("Press Play");
                             timer.cancel();
                             double a = 1;
+                            Date date = new Date();
+                            SimpleDateFormat ft = new SimpleDateFormat ("yyyy.MM.dd hh:mm:ss");
+                            f.edit().putString(Integer.toString((int) numTry) + "title", username + " " + Settings.getString("bpm", "") + "bpm " + ft.format(date)).commit();
+                            f.edit().putString(Integer.toString((int) numTry), perListString).commit();
+                            f.edit().putString(Double.toString(numTry), String.valueOf((long)(perList.size()))).commit();
                             if (tapSoundList.contains(a)){
                                 _makeSyncContList();
                                 _syncRepPercentage();
@@ -696,6 +720,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void _makePeriodList () {
         perList.add((Double.valueOf(periodMs)));
+        perListString = perListString + (int)periodMs + ",\n";
     }
 
     private void _makePeriod (){
@@ -816,6 +841,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void _feedbackPer () {
+
         _setColors();
         if (perList.size() == 0) {
 
@@ -1027,6 +1053,7 @@ public class MainActivity extends AppCompatActivity {
             feedback_per.setMax(1000);
         }
         else {
+            tempo_text.setText(Settings.getString("bpm", "") + " BPM");
             beatInterval = (60/(Double.parseDouble(Settings.getString("bpm", "")))*1000);
             feedback_per.setMax((int)beatInterval*2);
 
@@ -1062,12 +1089,12 @@ public class MainActivity extends AppCompatActivity {
             isChecked = Double.parseDouble(Settings.getString("isChecked", ""));
         }
         if (isChecked == 1) {
-//            linear3.setVisibility(View.VISIBLE);
+            linear3.setVisibility(View.GONE);
             linear20.setVisibility(View.VISIBLE);
             seekbar0.setVisibility(View.VISIBLE);
         }
         else {
-//            linear3.setVisibility(View.GONE);
+            linear3.setVisibility(View.GONE);
             linear20.setVisibility(View.GONE);
             seekbar0.setVisibility(View.GONE);
         }
@@ -1184,6 +1211,11 @@ public class MainActivity extends AppCompatActivity {
             period_mean.setText(Double.toString(perMean));
         }
     }
+
+    private void _storePerList (final ArrayList<Double> _list, final String _string){
+        f.edit().putString(Double.toString(numTry), String.valueOf((long)(perList.size()))).commit();
+    }
+
     private void _storeList2 (final ArrayList<Double> _list, final String _string) {
         if (asynList.size() > longestList) {
             longestList = asynList.size();

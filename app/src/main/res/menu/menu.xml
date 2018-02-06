@@ -8,7 +8,17 @@
         <!--android:gravity="left|start"-->
         <!--android:icon="@drawable/ic_arrow_back_black_24dp"-->
         <!--app:showAsAction="always" />-->
+
     <item
+        android:title="data"
+        android:id="@+id/action_data"
+        android:icon="@drawable/ic_show_chart_black_24dp"
+        app:showAsAction="ifRoom">
+    </item>
+
+
+    <item
+        android:title="settings"
         android:id="@+id/action_settings"
         android:icon="@drawable/ic_settings_black_24dp"
         app:showAsAction="ifRoom">
