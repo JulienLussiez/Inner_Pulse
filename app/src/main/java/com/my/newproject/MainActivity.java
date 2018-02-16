@@ -213,6 +213,8 @@ public class MainActivity extends AppCompatActivity {
     private int colorSlow2 = 0xFF26a69a;
     private int colorGood = 0xFF00897b;
     private int colorFast = 0xFF00796b;
+    private double toleranceConversion;
+    private String toleranceConversionString;
 
 
     @Override
@@ -790,7 +792,7 @@ public class MainActivity extends AppCompatActivity {
                             double a = 1;
                             Date date = new Date();
                             SimpleDateFormat ft = new SimpleDateFormat ("yyyy.MM.dd hh:mm:ss");
-                            f.edit().putString(Integer.toString((int) numTry) + "title", (int)numTry + ". " + username + " " + Settings.getString("bpm", "") + "bpm " + "± " + Settings.getString("tolerance", "") + " " +  ft.format(date)).commit();
+                            f.edit().putString(Integer.toString((int) numTry) + "title", (int)numTry + ". " + username + " " + Settings.getString("bpm", "") + "bpm " + "± " + toleranceConversionString + " " +  ft.format(date)).commit();
                             f.edit().putString(Integer.toString((int) numTry), perListString).apply();
                             f.edit().putString(Integer.toString((int) numTry) + "sync", syncList).apply();
                             f.edit().putString(Integer.toString((int) numTry) + "cont", contList).apply();
@@ -1500,22 +1502,44 @@ public class MainActivity extends AppCompatActivity {
         if (Settings.getString("bpm", "").equals("")) {
             beatInterval = 1000;
             feedback_per.setMax(1000);
+            Settings.edit().putString("bpm", "60").apply();
+
         }
         else {
-            tempo_text.setText(Settings.getString("bpm", "") + " BPM ± " + Settings.getString("tolerance", "") + " " + Settings.getString(Settings.getString("bpm", ""), "") );
+            tempo_text.setText(Settings.getString("bpm", "") + " BPM ± " + toleranceConversionString + " " + Settings.getString(Settings.getString("bpm", ""), "") );
             beatInterval = (60/(Double.parseDouble(Settings.getString("bpm", "")))*1000);
             feedback_per.setMax((int)beatInterval*2);
 
         }
+//        if (Settings.getString("tolerance", "").equals("")) {
+//            toleranceBpm = 33;
+//        }
+//        else {
+//            toleranceBpm = (Double.parseDouble(Settings.getString("tolerance", "")));
+//            toleranceBpm = (toleranceBpm/Double.parseDouble(Settings.getString("bpm", ""))*beatInterval);
+//            Log.d("test", Double.toString(toleranceBpm));
+//
+//        }
         if (Settings.getString("tolerance", "").equals("")) {
-            toleranceBpm = 33;
+            toleranceBpm = 34;
+            toleranceConversion = Math.round((toleranceBpm/beatInterval) * Double.parseDouble((Settings.getString("bpm", ""))));
+            int value = (int) toleranceConversion;
+            toleranceConversionString = Integer.toString(value);
+            tempo_text.setText(Settings.getString("bpm", "") + " BPM ± " + toleranceConversionString + " " + Settings.getString(Settings.getString("bpm", ""), "") );
         }
         else {
-            toleranceBpm = (Double.parseDouble(Settings.getString("tolerance", "")));
-            toleranceBpm = (toleranceBpm/Double.parseDouble(Settings.getString("bpm", ""))*beatInterval);
+            toleranceBpm = (Double.parseDouble(Settings.getString("tolerance", ""))) * 17;
+            Log.d("tolerance", Double.toString(toleranceBpm));
+//            toleranceBpm = (toleranceBpm/Double.parseDouble(Settings.getString("bpm", ""))*beatInterval);
+            toleranceConversion = Math.round((toleranceBpm/beatInterval) * Double.parseDouble((Settings.getString("bpm", ""))));
+            int value = (int) toleranceConversion;
+            toleranceConversionString = Integer.toString(value);
+            tempo_text.setText(Settings.getString("bpm", "") + " BPM ± " + toleranceConversionString + " " + Settings.getString(Settings.getString("bpm", ""), "") );
             Log.d("test", Double.toString(toleranceBpm));
+            Log.d("test", Double.toString(toleranceConversion));
 
         }
+
         if (Settings.getString("audible_beat", "").equals("")) {
             audibleBeats = 0;
         }

@@ -69,7 +69,7 @@ public class SettingsActivity extends AppCompatActivity {
 	private SeekBar seekBarTolerance;
 	private int stepTolerance = 1;
 	private int maxTolerance = 5;
-	private int minTolerance = 3;
+	private int minTolerance = 2;
 
 	private SeekBar seekBarBeats;
 	private int stepBeats = 1;
@@ -359,13 +359,13 @@ public class SettingsActivity extends AppCompatActivity {
 		}
 
 		if((f.getString("tolerance", "")).equals("")){
-			f.edit().putString("tolerance", "3").apply();
+			f.edit().putString("tolerance", "2").apply();
 			seekBarTolerance.setProgress(0);
-			tolerance.setText("3");
+			tolerance.setText("2");
 		}
 		else {
 			tolerance.setText(f.getString("tolerance", ""));
-			seekBarTolerance.setProgress(Integer.parseInt(f.getString("tolerance", "")) - 3);
+			seekBarTolerance.setProgress(Integer.parseInt(f.getString("tolerance", "")) - 2);
 		}
 
 		if((f.getString("audible_beat", "")).equals("")){
