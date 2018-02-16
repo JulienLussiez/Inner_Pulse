@@ -1528,7 +1528,8 @@ public class MainActivity extends AppCompatActivity {
             tempo_text.setText(Settings.getString("bpm", "") + " BPM ± " + toleranceConversionString + " " + Settings.getString(Settings.getString("bpm", ""), "") );
         }
         else {
-            toleranceBpm = (Double.parseDouble(Settings.getString("tolerance", ""))) * 17;
+//            toleranceBpm = (Double.parseDouble(Settings.getString("tolerance", ""))) * 17;
+            toleranceBpm = (Double.parseDouble(Settings.getString("tolerance", "")));
             Log.d("tolerance", Double.toString(toleranceBpm));
 //            toleranceBpm = (toleranceBpm/Double.parseDouble(Settings.getString("bpm", ""))*beatInterval);
             toleranceConversion = Math.round((toleranceBpm/beatInterval) * Double.parseDouble((Settings.getString("bpm", ""))));

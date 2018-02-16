@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -67,14 +68,14 @@ public class SettingsActivity extends AppCompatActivity {
 	private int min = 30;
 
 	private SeekBar seekBarTolerance;
-	private int stepTolerance = 1;
-	private int maxTolerance = 5;
-	private int minTolerance = 2;
+	private int stepTolerance = 20;
+	private int maxTolerance = 80;
+	private int minTolerance = 40;
 
 	private SeekBar seekBarBeats;
 	private int stepBeats = 1;
 	private int maxBeats = 200;
-	private int minBeats = 20;
+	private int minBeats = 30;
 
 
 	@Override
@@ -307,6 +308,8 @@ public class SettingsActivity extends AppCompatActivity {
 						int value = minTolerance + (progress * stepTolerance);
 						tolerance.setText(Integer.toString(value));
 						f.edit().putString("tolerance", tolerance.getText().toString()).apply();
+						Log.d("tolerance", f.getString("tolerance", ""));
+
 
 					}
 				}
@@ -359,13 +362,14 @@ public class SettingsActivity extends AppCompatActivity {
 		}
 
 		if((f.getString("tolerance", "")).equals("")){
-			f.edit().putString("tolerance", "2").apply();
+			f.edit().putString("tolerance", "40").apply();
 			seekBarTolerance.setProgress(0);
-			tolerance.setText("2");
+			tolerance.setText("40");
 		}
 		else {
 			tolerance.setText(f.getString("tolerance", ""));
-			seekBarTolerance.setProgress(Integer.parseInt(f.getString("tolerance", "")) - 2);
+			seekBarTolerance.setProgress((Integer.parseInt(f.getString("tolerance", ""))/20) - 2);
+			Log.d("tolerance", f.getString("tolerance", ""));
 		}
 
 		if((f.getString("audible_beat", "")).equals("")){
@@ -377,13 +381,13 @@ public class SettingsActivity extends AppCompatActivity {
 		}
 
 		if((f.getString("quiet_beat", "")).equals("")){
-			f.edit().putString("quiet_beat", "60").apply();
-			seekBarBeats.setProgress(40);
-			quiet_beat.setText("60");
+			f.edit().putString("quiet_beat", "30").apply();
+			seekBarBeats.setProgress(0);
+			quiet_beat.setText("30");
 		}
 		else {
 			quiet_beat.setText(f.getString("quiet_beat", ""));
-			seekBarBeats.setProgress(Integer.parseInt(f.getString("quiet_beat", "")) - 20);
+			seekBarBeats.setProgress(Integer.parseInt(f.getString("quiet_beat", "")) - 30);
 		}
 
 		if((f.getString("repetition", "")).equals("")){

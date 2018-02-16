@@ -313,7 +313,7 @@ public class ChartActivity extends AppCompatActivity {
         int count = trialList.size();
         DataPoint[] values = new DataPoint[count];
         for (int i=0; i<count; i++) {
-            double x = Double.parseDouble((f.getString(nChart  + "bpm", ""))) + ((Double.parseDouble((f.getString(nChart  + "tolerance", "")))*17)/beatInterval)*Double.parseDouble((f.getString(nChart  + "bpm", "")));
+            double x = Double.parseDouble((f.getString(nChart  + "bpm", ""))) + ((Double.parseDouble((f.getString(nChart  + "tolerance", ""))))/beatInterval)*Double.parseDouble((f.getString(nChart  + "bpm", "")));
             double y = i;
             DataPoint v = new DataPoint(x, y);
             values[i] = v;
@@ -326,7 +326,7 @@ public class ChartActivity extends AppCompatActivity {
         DataPoint[] values = new DataPoint[count];
         for (int i=0; i<count; i++) {
             double y = i;
-            double x = Double.parseDouble((f.getString(nChart  + "bpm", ""))) - ((Double.parseDouble((f.getString(nChart  + "tolerance", "")))*17)/beatInterval)*Double.parseDouble((f.getString(nChart  + "bpm", "")));
+            double x = Double.parseDouble((f.getString(nChart  + "bpm", ""))) - ((Double.parseDouble((f.getString(nChart  + "tolerance", ""))))/beatInterval)*Double.parseDouble((f.getString(nChart  + "bpm", "")));
             DataPoint v = new DataPoint(x, y);
             values[i] = v;
         }
