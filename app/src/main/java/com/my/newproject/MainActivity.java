@@ -21,6 +21,7 @@ import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -62,15 +63,22 @@ public class MainActivity extends AppCompatActivity {
     private TextView period_ms;
     private TextView period_mean;
     private SeekBar total_progress;
+    private ProgressBar comboBar;
+    private ProgressBar rushingBar;
+    private ProgressBar draggingBar;
     private FloatingActionButton fab;
     private CustomSeekBar seekbar0;
 
 
     private int inc = 0;
+    private int comboEnd = 0;
+    private int tapToBegin = 0;
+    private int comboMax;
     private int startMF = 0;
     private int perCounter = 1;
-    private int cd = 4;
+    private int cd = 1;
     private int firstTapInterval = 0;
+    private int firstCd = 1;
     private double firstTap = 0;
     private double secondTap = 0;
     private double thirdTap = 0;
@@ -125,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
     private double tooLateSyncPercent = 0;
     private double tooSoonSyncPercent = 0;
     private double perfectSyncPercent = 0;
-    private double isChecked = 0;
+    private double isChecked = 1;
     private double tooLateContPercent = 0;
     private double perfectContPercent = 0;
     private double tooSoonContPercent = 0;
@@ -135,12 +143,14 @@ public class MainActivity extends AppCompatActivity {
     private String accuracyPercent = "";
     private String accuracyRep = "";
     private ProgressDialog pd;
+    private String fb_post;
     private boolean dialogIsShowing = false;
     private boolean countdownIsRunning = false;
     private boolean canTap = false;
     private int fab_play = 0;
     int j2 = 0;
     int k2 = 0;
+    private int comboOn = 0;
 
     private ArrayList<String> latencySelection = new ArrayList<String>();
     private ArrayList<Double> asynList = new ArrayList<Double>();
@@ -191,6 +201,18 @@ public class MainActivity extends AppCompatActivity {
     private int good;
     private int fast;
     private int nChart;
+    private double lastlastPer;
+    private double toleranceBpm;
+    private TextView score_text;
+    private String syncList;
+    private String contList;
+    private String syncTap;
+    private String contTap;
+
+    private int colorSlow = 0xFF26a69a;
+    private int colorSlow2 = 0xFF26a69a;
+    private int colorGood = 0xFF00897b;
+    private int colorFast = 0xFF00796b;
 
 
     @Override
@@ -209,11 +231,11 @@ public class MainActivity extends AppCompatActivity {
         seekbar.setMax((int)beatInterval*2);
         seekbar.setProgress((int)beatInterval);
         totalSpan = (float)beatInterval;
-        redSpanLeft = (float)(beatInterval/3);
-        yellowSpanRightLeft = (float)(beatInterval/7);
-        greenSpan = ((float)(beatInterval/20));
-        yellowSpanRight = (float)(beatInterval/7);
-        redSpanRight = (float)(beatInterval/3);
+        redSpanLeft = (float)(beatInterval/2);
+//        yellowSpanRightLeft = (float)(beatInterval/7);
+//        greenSpan = ((float)(beatInterval/20));
+//        yellowSpanRight = (float)(beatInterval/7);
+        redSpanRight = (float)(beatInterval/2);
 
         progressItemList = new ArrayList<ProgressItem>();
         // red span
@@ -245,6 +267,13 @@ public class MainActivity extends AppCompatActivity {
 
         seekbar.initData(progressItemList);
         seekbar.invalidate();
+
+        seekbar.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return true;
+            }
+        });
     }
 
 
@@ -318,9 +347,9 @@ public class MainActivity extends AppCompatActivity {
         send = (Button) findViewById(R.id.send);
         about = (Button) findViewById(R.id.about);
         too_soon_red = (TextView) findViewById(R.id.too_soon_red);
-        too_soon_yellow = (TextView) findViewById(R.id.too_soon_yellow);
+//        too_soon_yellow = (TextView) findViewById(R.id.too_soon_yellow);
         perfect_green = (TextView) findViewById(R.id.perfect_green);
-        too_late_yellow = (TextView) findViewById(R.id.too_late_yellow);
+//        too_late_yellow = (TextView) findViewById(R.id.too_late_yellow);
         too_late_red = (TextView) findViewById(R.id.too_late_red);
         today_progress_label = (TextView) findViewById(R.id.today_progress_label);
         today_progress = (SeekBar) findViewById(R.id.today_progress);
@@ -328,16 +357,23 @@ public class MainActivity extends AppCompatActivity {
         total_progress = (SeekBar) findViewById(R.id.total_progress);
         num_try_text = (TextView) findViewById(R.id.num_try_text);
         combo_text = (TextView) findViewById(R.id.combo_text);
+        score_text = (TextView) findViewById(R.id.score_text);
         fab = (FloatingActionButton) findViewById(R.id.fab);
         period_ms = (TextView) findViewById(R.id.period_ms);
         period_mean = (TextView) findViewById(R.id.period_mean);
         feedback_per = (SeekBar) findViewById(R.id.feedback_per);
         tempo_text = (TextView) findViewById(R.id.tempo);
+        comboBar = (ProgressBar) findViewById(R.id.comboBar);
+        rushingBar = (ProgressBar) findViewById(R.id.rushingBar);
+        draggingBar = (ProgressBar) findViewById(R.id.draggingBar);
 
         fAsyn = getSharedPreferences("fAsyn", Activity.MODE_PRIVATE);
         f = getSharedPreferences("settings", Activity.MODE_PRIVATE);
         Settings = getSharedPreferences("Settings", Activity.MODE_PRIVATE);
         d = new AlertDialog.Builder(this);
+
+        _setColors();
+        _setProgressBar();
 
         feedback_per.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -350,28 +386,61 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                    if ((play.getText().toString().equals("Stop")&& canTap == true) || (fab_play == 1 && canTap == true)) {
-                        tapCounter++;
-                        calendar = Calendar.getInstance();
-                        tapTime = calendar.getTimeInMillis();
-                        tapTimeList.add(Double.valueOf(tapTime));
-                        period = (tapTime - beatTime) - latency;
+                    if (tapToBegin == 0) {
+                        tapToBegin = 1;
+                        fab.setImageResource(R.drawable.ic_stop_black_24dp);
+                        seekbar.setProgress(((int)beatInterval));
+                        _setColors();
+                        _setProgressBar();
+                        fab_play = 1;
+                        combo = 0;
+                        comboOn = 0;
+                        comboMax = 0;
+                        String record = f.getString(Settings.getString("bpm", "") + Settings.getString("tolerance", ""), "");
+                        score_text.setText("Max : " + comboMax + " | Record : " + record);
+                        combo_text.setText("Combo : " + Integer.toString(combo));
+                        beatCounter = ((audibleBeats + quietBeats) * multiplier)+4;
+                        firstTapInterval = 0;
+                        comboBar.setProgress(0);
+                        j = 0;
+                        firstCd = 1;
+                        perCounter = 1;
+                        tapCounter = 0;
+                        cd = 1;
+                        perListString = "";
+                        syncList = "";
+                        contList = "";
+                        syncTap = "";
+                        contTap = "";
+                        asynList.clear();
+                        perList.clear();
+                        tapTimeList.clear();
+                        tapSoundList.clear();
+                        accuracyPercentList.clear();
+                        _startTimer();}
 
-                        _makePeriod();
-//                        _makePeriodList();
-                        _makeAsynList();
-                        _makeSoundTapList();
+                        if ((play.getText().toString().equals("Stop")&& canTap == true) || (fab_play == 1 && canTap == true)) {
+                            tapCounter++;
+                            calendar = Calendar.getInstance();
+                            tapTime = calendar.getTimeInMillis();
+                            tapTimeList.add(Double.valueOf(tapTime));
+                            period = (tapTime - beatTime) - latency;
+
+                            _makePeriod();
+//                        _makeAsynList();
+//                        _makeSoundTapList();
 //                        _feedback();
-                        _feedbackPer();
 
-                        if (firstTapInterval == 1){
-                            _makePeriodList();
-                            feedback_per.setProgress(((int)beatInterval*2) - (int)periodMs);
-                            seekbar.setProgress(((int)beatInterval*2) - (int)periodMs);
+                            if (firstTapInterval == 1){
+                                _makePeriodList();
+                                _feedbackPer();
+//                            feedback_per.setProgress(((int)beatInterval*2) - (int)periodMs);
+//                            seekbar.setProgress(((int)beatInterval*2) - (int)periodMs);
+                            }
+                            firstTapInterval = 1;
                         }
-                        firstTapInterval = 1;
                     }
-                }
+
                 return false;
             }
 
@@ -524,23 +593,36 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 // Click action
                 if (fab_play == 0) {
+                    _setColors();
+                    _setProgressBar();
                     fab.setImageResource(R.drawable.ic_stop_black_24dp);
+                    seekbar.setProgress(((int)beatInterval));
                     fab_play = 1;
+                    tapToBegin = 1;
                     combo = 0;
+                    comboOn = 0;
+                    comboMax = 0;
+                    String record = f.getString(Settings.getString("bpm", "") + Settings.getString("tolerance", ""), "");
+                    score_text.setText("Max : " + comboMax + " | Record : " + record);
                     combo_text.setText("Combo : " + Integer.toString(combo));
                     beatCounter = ((audibleBeats + quietBeats) * multiplier)+4;
                     firstTapInterval = 0;
+                    comboBar.setProgress(0);
                     j = 0;
+                    firstCd = 1;
                     perCounter = 1;
                     tapCounter = 0;
-                    cd = 4;
+                    cd = 1;
                     perListString = "";
+                    syncList = "";
+                    contList = "";
+                    syncTap = "";
+                    contTap = "";
                     asynList.clear();
                     perList.clear();
                     tapTimeList.clear();
                     tapSoundList.clear();
                     accuracyPercentList.clear();
-                    _setColors();
                     _startTimer();
 
 //                    countdown = new CountDownTimer((long)(4*beatInterval), (long)beatInterval - 10) {
@@ -561,9 +643,13 @@ public class MainActivity extends AppCompatActivity {
                         timer.cancel();
 //                    countdown.cancel();
                     canTap = false;
-                    tap.setText("Press Play");
+                    tap.setText("Tap to start");
+                    _setColors();
+                    _setProgressBar();
+                    seekbar.setProgress(((int)beatInterval));
                     fab.setImageResource(R.drawable.ic_play_arrow_black_24dp);
                     fab_play = 0;
+                    tapToBegin = 0;
                 }
             }
         });
@@ -621,19 +707,28 @@ public class MainActivity extends AppCompatActivity {
                         calendar = Calendar.getInstance();
                         beatTime = calendar.getTimeInMillis();
                         if ((play.getText().toString().equals("Stop") && !(beatCounter == 0)) || (fab_play == 1 && !(beatCounter == 0))) {
-                            if (!(j == beatSoundList.size())) {
-                                if (beatSoundList.get((int)(j)).doubleValue() == 0) {
-                                    if (cd == 0){
+
+                            if (true) {
+                                if (comboOn == 0) {
+                                    if (cd == 5){
+                                        comboOn = 1;
+                                        firstCd = 0;
+                                        _setColors();
+                                        _setProgressBar();
+                                        seekbar.setProgress(((int)beatInterval));
                                         sp.stop((int)(soundID));
-                                        playSound = sp.play((int)(soundID), 1.0f, 1.0f, 1, (int)(0), 1.0f);
+//                                        playSound = sp.play((int)(soundID), 1.0f, 1.0f, 1, (int)(0), 1.0f);
                                         tap.setText("Tap");
                                         canTap = true;
                                     }
                                     else {
-                                        if (cd == 4 || cd == 3 || cd == 2 || cd == 1){
+                                        if (cd == 1 || cd == 2 || cd == 3 || cd == 4){
                                             sp.stop((int)(soundID));
                                             playSound = sp.play((int)(soundID), 1.0f, 1.0f, 1, (int)(0), 1.0f);
-                                            tap.setText(String.valueOf(cd));
+                                            if (firstCd == 1) {
+                                                tap.setText(String.valueOf(cd));
+
+                                            }
                                         }
                                         else {
                                             sp.stop((int)(soundID));
@@ -649,8 +744,38 @@ public class MainActivity extends AppCompatActivity {
                                 }
                                 j++;
                             }
+
+
+//                            if (!(j == beatSoundList.size())) {
+//                                if (beatSoundList.get((int)(j)).doubleValue() == 0) {
+//                                    if (cd == 0){
+//                                        sp.stop((int)(soundID));
+//                                        playSound = sp.play((int)(soundID), 1.0f, 1.0f, 1, (int)(0), 1.0f);
+//                                        tap.setText("Tap");
+//                                        canTap = true;
+//                                    }
+//                                    else {
+//                                        if (cd == 4 || cd == 3 || cd == 2 || cd == 1){
+//                                            sp.stop((int)(soundID));
+//                                            playSound = sp.play((int)(soundID), 1.0f, 1.0f, 1, (int)(0), 1.0f);
+//                                            tap.setText(String.valueOf(cd));
+//                                        }
+//                                        else {
+//                                            sp.stop((int)(soundID));
+//                                            playSound = sp.play((int)(soundID), 1.0f, 1.0f, 1, (int)(0), 1.0f);
+//                                        }
+//                                    }
+//                                }
+//                                else {
+//                                    tap.setText("Tap");
+//                                    canTap = true;
+//                                    sp.stop((int)(soundID));
+//                                    playSound = sp.play((int)(soundID2), 1.0f, 1.0f, 1, (int)(0), 1.0f);
+//                                }
+//                                j++;
+//                            }
                             beatCounter--;
-                            cd--;
+                            cd++;
 
                         }
                         else {
@@ -659,20 +784,32 @@ public class MainActivity extends AppCompatActivity {
                             play.setText("Play");
                             fab.setImageResource(R.drawable.ic_play_arrow_black_24dp);
                             fab_play = 0;
-                            tap.setText("Press Play");
+                            seekbar.setProgress(((int)beatInterval));
+                            tap.setText("Tap to start");
                             timer.cancel();
                             double a = 1;
                             Date date = new Date();
                             SimpleDateFormat ft = new SimpleDateFormat ("yyyy.MM.dd hh:mm:ss");
-                            f.edit().putString(Integer.toString((int) numTry) + "title", username + " " + Settings.getString("bpm", "") + "bpm " + ft.format(date)).commit();
-                            f.edit().putString(Integer.toString((int) numTry), perListString).commit();
+                            f.edit().putString(Integer.toString((int) numTry) + "title", (int)numTry + ". " + username + " " + Settings.getString("bpm", "") + "bpm " + "± " + Settings.getString("tolerance", "") + " " +  ft.format(date)).commit();
+                            f.edit().putString(Integer.toString((int) numTry), perListString).apply();
+                            f.edit().putString(Integer.toString((int) numTry) + "sync", syncList).apply();
+                            f.edit().putString(Integer.toString((int) numTry) + "cont", contList).apply();
+                            f.edit().putString(Integer.toString((int) numTry) + "syncTap", syncTap).apply();
+                            f.edit().putString(Integer.toString((int) numTry) + "contTap", contTap).apply();
+                            f.edit().putString(Integer.toString((int) numTry) + "tolerance", Settings.getString("tolerance", "")).apply();
+                            f.edit().putString(Integer.toString((int) numTry) + "beats", Settings.getString("quiet_beat", "") ).apply();
+                            f.edit().putString(Integer.toString((int) numTry) + "bpm", Settings.getString("bpm", "")).apply();
                             f.edit().putString(Double.toString(numTry), String.valueOf((long)(perList.size()))).commit();
                             _statistics();
                             _feedbackPostPer();
                             if (beatCounter == 0) {
-                                    numTry++;
-                                    f.edit().putString("numTry", String.valueOf((long) (numTry))).commit();
-                                }
+                                numTry++;
+//                                _storeComboMax();
+                                f.edit().putString("numTry", String.valueOf((long) (numTry))).commit();
+                                nChart = (int) numTry - 1;
+                                f.edit().putString("fbPost" + String.format(String.valueOf(nChart)) ,fb_post).apply();
+                                f.edit().putString("nChart",Integer.toString(nChart)).apply();
+                            }
 //                            if (tapSoundList.contains(a)){
 //                                _makeSyncContList();
 //                                _syncRepPercentage();
@@ -714,32 +851,42 @@ public class MainActivity extends AppCompatActivity {
         };
         _timer.scheduleAtFixedRate(timer, (int)(0), (int)(beatInterval));
     }
-    private void _makeAsynList () {
-        if ((period / beatInterval) > 0.5d) {
-            if (Math.abs(tapTime) < 1) {
-                asynList.add((Double.valueOf((beatTime - latency) - beatInterval))*(beatInterval/1000));
 
-            }
-            else {
-                asynList.add((Double.valueOf(period - beatInterval))*(beatInterval/1000));
-
-            }
-        }
-        else {
-            if (Math.abs(tapTime) < 1) {
-                asynList.add((Double.valueOf(beatTime))*(beatInterval/1000));
-
-            }
-            else {
-                asynList.add((Double.valueOf(period))*(beatInterval/1000));
-
-            }
-        }
-    }
+//    private void _makeAsynList () {
+//        if ((period / beatInterval) > 0.5d) {
+//            if (Math.abs(tapTime) < 1) {
+//                asynList.add((Double.valueOf((beatTime - latency) - beatInterval))*(beatInterval/1000));
+//
+//            }
+//            else {
+//                asynList.add((Double.valueOf(period - beatInterval))*(beatInterval/1000));
+//
+//            }
+//        }
+//        else {
+//            if (Math.abs(tapTime) < 1) {
+//                asynList.add((Double.valueOf(beatTime))*(beatInterval/1000));
+//
+//            }
+//            else {
+//                asynList.add((Double.valueOf(period))*(beatInterval/1000));
+//
+//            }
+//        }
+//    }
 
     private void _makePeriodList () {
         perList.add((Double.valueOf(periodMs)));
         perListString = perListString + (int)periodMs + ",\n";
+
+        if (cd <= 5){
+            syncList = syncList + (int)periodMs + ",\n";
+            syncTap = syncTap + tapCounter + ",\n";
+        }
+//        else {
+//            contList = contList + (int)periodMs + ",\n";
+//            contTap = contTap + tapCounter + ",\n";
+//        }
     }
 
     private void _makePeriod (){
@@ -774,149 +921,395 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-    private void _makeSyncContList () {
-        audibleBeatsList.clear();
-        quietBeatsList.clear();
-        iMakeSyncContList = 0;
-        for(int _repeat10 = 0; _repeat10 < (int)(asynList.size()); _repeat10++) {
-            if (tapSoundList.get((int)(iMakeSyncContList)).doubleValue() == 0) {
-                audibleBeatsList.add(Double.valueOf(asynList.get((int)(iMakeSyncContList)).doubleValue()));
-            }
-            else {
-                quietBeatsList.add(Double.valueOf(asynList.get((int)(iMakeSyncContList)).doubleValue()));
-            }
-            iMakeSyncContList++;
-        }
-    }
-    private void _makeSoundTapList () {
-        if (beatSoundList.get((int)(j - 1)).doubleValue() == 0) {
-            tapSoundList.add(Double.valueOf(0));
-        }
-        else {
-            tapSoundList.add(Double.valueOf(1));
-        }
-    }
-    private void _updateProgress () {
-        num_try_text.setText("Progression : " + String.valueOf((int)numTry) + "/400");
-        if (today_progress.getProgress() == 100) {
-            today_progress.setProgress((int)20);
-            today_progress_label.setText("Day ".concat(String.valueOf((long)(day))).concat(" : ".concat(String.valueOf((long)(today_progress.getProgress())).concat("%"))));
-            total_progress.setProgress((int)total_progress.getProgress() + 1);
-            total_progress_label.setText("Total : ".concat(String.valueOf((long)(total_progress.getProgress())).concat("%")));
-        }
-        else {
-            today_progress.setProgress((int)today_progress.getProgress() + 20);
-            today_progress_label.setText("Day ".concat(String.valueOf((long)(day))).concat(" : ".concat(String.valueOf((long)(today_progress.getProgress())).concat("%"))));
-            total_progress.setProgress((int)total_progress.getProgress() + 1);
-            total_progress_label.setText("Total : ".concat(String.valueOf((long)(total_progress.getProgress())).concat("%")));
-            if (today_progress.getProgress() == 100) {
-                day++;
-            }
-        }
-        f.edit().putString("today_progress", String.valueOf((long)(today_progress.getProgress()))).commit();
-        f.edit().putString("today_progress_label", "Day ".concat(String.valueOf((long)(day))).concat(" : ".concat(String.valueOf((long)(today_progress.getProgress())).concat("%")))).commit();
-        f.edit().putString("total_progress", String.valueOf((long)(total_progress.getProgress()))).commit();
-        f.edit().putString("total_progress_label", "Total : ".concat(String.valueOf((long)(total_progress.getProgress())).concat("%"))).commit();
-        f.edit().putString("day", String.valueOf((long)(day))).commit();
-    }
-    private void _feedback () {
-        _setColors();
-        if (asynList.size() == 0) {
 
-        }
-        else {
-            lastAsyn = asynList.get((int)(asynList.size() - 1)).doubleValue();
-            if (((-(beatInterval/2) < lastAsyn) && (lastAsyn < -(beatInterval/20))) || (lastAsyn == -(beatInterval/2))) {
-                too_soon_red.setBackgroundColor(0xFFF44336);
+//    private void _makeSyncContList () {
+//        audibleBeatsList.clear();
+//        quietBeatsList.clear();
+//        iMakeSyncContList = 0;
+//        for(int _repeat10 = 0; _repeat10 < (int)(asynList.size()); _repeat10++) {
+//            if (tapSoundList.get((int)(iMakeSyncContList)).doubleValue() == 0) {
+//                audibleBeatsList.add(Double.valueOf(asynList.get((int)(iMakeSyncContList)).doubleValue()));
+//            }
+//            else {
+//                quietBeatsList.add(Double.valueOf(asynList.get((int)(iMakeSyncContList)).doubleValue()));
+//            }
+//            iMakeSyncContList++;
+//        }
+//    }
+//    private void _makeSoundTapList () {
+//        if (beatSoundList.get((int)(j - 1)).doubleValue() == 0) {
+//            tapSoundList.add(Double.valueOf(0));
+//        }
+//        else {
+//            tapSoundList.add(Double.valueOf(1));
+//        }
+//    }
+//    private void _updateProgress () {
+//        num_try_text.setText("Progression : " + String.valueOf((int)numTry) + "/400");
+//        if (today_progress.getProgress() == 100) {
+//            today_progress.setProgress((int)20);
+//            today_progress_label.setText("Day ".concat(String.valueOf((long)(day))).concat(" : ".concat(String.valueOf((long)(today_progress.getProgress())).concat("%"))));
+//            total_progress.setProgress((int)total_progress.getProgress() + 1);
+//            total_progress_label.setText("Total : ".concat(String.valueOf((long)(total_progress.getProgress())).concat("%")));
+//        }
+//        else {
+//            today_progress.setProgress((int)today_progress.getProgress() + 20);
+//            today_progress_label.setText("Day ".concat(String.valueOf((long)(day))).concat(" : ".concat(String.valueOf((long)(today_progress.getProgress())).concat("%"))));
+//            total_progress.setProgress((int)total_progress.getProgress() + 1);
+//            total_progress_label.setText("Total : ".concat(String.valueOf((long)(total_progress.getProgress())).concat("%")));
+//            if (today_progress.getProgress() == 100) {
+//                day++;
+//            }
+//        }
+//        f.edit().putString("today_progress", String.valueOf((long)(today_progress.getProgress()))).commit();
+//        f.edit().putString("today_progress_label", "Day ".concat(String.valueOf((long)(day))).concat(" : ".concat(String.valueOf((long)(today_progress.getProgress())).concat("%")))).commit();
+//        f.edit().putString("total_progress", String.valueOf((long)(total_progress.getProgress()))).commit();
+//        f.edit().putString("total_progress_label", "Total : ".concat(String.valueOf((long)(total_progress.getProgress())).concat("%"))).commit();
+//        f.edit().putString("day", String.valueOf((long)(day))).commit();
+//    }
+//    private void _feedback () {
+//        _setColors();
+//        if (asynList.size() == 0) {
+//
+//        }
+//        else {
+//            lastAsyn = asynList.get((int)(asynList.size() - 1)).doubleValue();
+//            if (((-(beatInterval/2) < lastAsyn) && (lastAsyn < -(beatInterval/20))) || (lastAsyn == -(beatInterval/2))) {
+//                too_soon_red.setBackgroundColor(0xFFF44336);
+//
+//            }
+//            else {
+//                if (((-(beatInterval/10) < lastAsyn) && (lastAsyn < -(beatInterval/20))) || (lastAsyn == -(beatInterval/10))) {
+//                    too_soon_yellow.setBackgroundColor(0xFFFFEB3B);
+//
+//                }
+//                else {
+//                    if (((-(beatInterval/20) < lastAsyn) && (lastAsyn < (beatInterval/20))) || (lastAsyn == -(beatInterval/20))) {
+//                        perfect_green.setBackgroundColor(0xFF4CAF50);
+//
+//                    }
+//                    else {
+//                        if (((beatInterval/20 < lastAsyn) && (beatInterval/10 < 100)) || (lastAsyn == 20)) {
+//                            too_late_yellow.setBackgroundColor(0xFFFFEB3B);
+//                        }
+//                        else {
+//                            if ((((beatInterval/10) < lastAsyn) && (lastAsyn < (beatInterval/2))) || (lastAsyn == (beatInterval/10))) {
+//                                too_late_red.setBackgroundColor(0xFFF44336);
+//                            }
+//                            else {
+//                                too_late_red.setBackgroundColor(0xFFF44336);
+////								too_soon_red.setBackgroundColor(0xFFF44336);
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
 
-            }
-            else {
-                if (((-(beatInterval/10) < lastAsyn) && (lastAsyn < -(beatInterval/20))) || (lastAsyn == -(beatInterval/10))) {
-                    too_soon_yellow.setBackgroundColor(0xFFFFEB3B);
+//    private void _feedbackPer () {
+//
+//        if (perList.size() == 0) {
+//
+//        }
+//        else {
+//            lastPer = periodMs;
+//            if ((beatInterval/1000 < lastPer) && (lastPer < beatInterval/1.1) || (lastPer == beatInterval/1000)) {
+//                if (comboOn == 0) {
+//
+//                }
+//                else {
+//                    combo = 0;
+//                    comboOn = 0;
+//                    cd = 1;
+//                }
+//
+//                comboBar.setProgress(0);
+//                combo_text.setText("Combo : " + Integer.toString(combo));
+////                seekbar.setThumb(getResources().getDrawable( R.drawable.ic_fast_rewind_black_24dp));
+//
+//            }
+//            else {
+//                if ((beatInterval/1.1 < lastPer) && (lastPer < beatInterval/1.03) || (lastPer == beatInterval/1.1)) {
+//                    if (comboOn == 0) {
+//
+//                    }
+//                    else {
+//                        combo = 0;
+//                        comboOn = 0;
+//                        cd = 1;
+//                    }
+//                    comboBar.setProgress(0);
+//                    combo_text.setText("Combo : " + Integer.toString(combo));
+////                    seekbar.setThumb(getResources().getDrawable( R.drawable.ic_fast_rewind_black_24dp));
+//
+//                }
+//                else {
+//                    if ((beatInterval/1.03 < lastPer) && (lastPer < beatInterval/0.97) || (lastPer == beatInterval/1.03)) {
+//                        if (comboOn == 0){
+//
+//                        }
+//                        else {
+//                            combo++;
+//                            comboBar.incrementProgressBy(1);
+//                            if (combo%6 == 0){
+//                                comboBar.setProgress(0);
+//                            }
+//                            combo_text.setText("Combo : " + Integer.toString(combo));
+//                        }
+//
+////                        seekbar.setThumb(getResources().getDrawable( R.drawable.ic_arrow_drop_down_black_24dp));
+//
+//                    }
+//                    else {
+//                        if ((beatInterval/0.97 < lastPer) && (lastPer < beatInterval/0.85) || (lastPer == beatInterval/0.97)) {
+//                            if (comboOn == 0) {
+//
+//                            }
+//                            else {
+//                                combo = 0;
+//                                comboOn = 0;
+//                                cd = 1;
+//                            }
+//                            comboBar.setProgress(0);
+//                            combo_text.setText("Combo : " + Integer.toString(combo));
+////                            seekbar.setThumb(getResources().getDrawable( R.drawable.ic_fast_forward_black_24dp));
+//
+//                        }
+//                        else {
+//                            if ((beatInterval/0.85 < lastPer) && (lastPer < beatInterval/0.1) || (lastPer == beatInterval/0.85)) {
+//                                if (comboOn == 0) {
+//
+//                                }
+//                                else {
+//                                    combo = 0;
+//                                    comboOn = 0;
+//                                    cd = 1;
+//                                }
+//                                comboBar.setProgress(0);
+//                                combo_text.setText("Combo : " + Integer.toString(combo));
+////                                seekbar.setThumb(getResources().getDrawable( R.drawable.ic_fast_forward_black_24dp));
+//                            }
+//                            else {
+//                                if (comboOn == 0) {
+//
+//                                }
+//                                else {
+//                                    combo = 0;
+//                                    comboOn = 0;
+//                                    cd = 1;
+//                                }
+//                                comboBar.setProgress(0);
+//                                combo_text.setText("Combo : " + Integer.toString(combo));
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
 
-                }
-                else {
-                    if (((-(beatInterval/20) < lastAsyn) && (lastAsyn < (beatInterval/20))) || (lastAsyn == -(beatInterval/20))) {
-                        perfect_green.setBackgroundColor(0xFF4CAF50);
-
-                    }
-                    else {
-                        if (((beatInterval/20 < lastAsyn) && (beatInterval/10 < 100)) || (lastAsyn == 20)) {
-                            too_late_yellow.setBackgroundColor(0xFFFFEB3B);
-                        }
-                        else {
-                            if ((((beatInterval/10) < lastAsyn) && (lastAsyn < (beatInterval/2))) || (lastAsyn == (beatInterval/10))) {
-                                too_late_red.setBackgroundColor(0xFFF44336);
-                            }
-                            else {
-                                too_late_red.setBackgroundColor(0xFFF44336);
-//								too_soon_red.setBackgroundColor(0xFFF44336);
-                                                            }
-                        }
-                    }
-                }
-            }
-        }
+       private void _setColors () {
+        too_soon_red.setBackgroundColor(colorSlow);
+//        too_soon_yellow.setBackgroundColor(0xFFE0E0E0);
+        perfect_green.setBackgroundColor(colorSlow);
+//        too_late_yellow.setBackgroundColor(0xFFE0E0E0);
+        too_late_red.setBackgroundColor(colorSlow);
     }
+
+    private void _setProgressBar () {
+        colorSlow2 = colorSlow;
+        rushingBar.setProgress(0);
+        draggingBar.setProgress(0);
+        comboBar.setProgress(0);
+        rushingBar.getProgressDrawable().setColorFilter(colorSlow, android.graphics.PorterDuff.Mode.SRC_IN);
+        draggingBar.getProgressDrawable().setColorFilter(colorSlow, android.graphics.PorterDuff.Mode.SRC_IN);
+        comboBar.getProgressDrawable().setColorFilter(colorSlow, android.graphics.PorterDuff.Mode.SRC_IN);
+    }
+
 
     private void _feedbackPer () {
+        int colorIncrement = 0;
+        int colorCombo = colorSlow;
 
-        _setColors();
         if (perList.size() == 0) {
 
         }
         else {
             lastPer = periodMs;
-            if ((beatInterval/1000 < lastPer) && (lastPer < beatInterval/1.1) || (lastPer == beatInterval/1000)) {
-                too_soon_red.setBackgroundColor(0xFFF44336);
-                combo = 0;
+            Log.d("per", Double.toString(lastPer));
+            if (tapCounter > 1){
+                lastlastPer = perList.get(perList.size()-1);
+                Log.d("per", Double.toString(perList.get(perList.size()-1)));
+            }
+            if ((beatInterval/1000 < lastPer) && (lastPer < beatInterval - toleranceBpm) || (lastPer == beatInterval/1000)) {
+                if (comboOn == 0) {
+
+                }
+                else {
+                    too_soon_red.setBackgroundColor(colorFast + colorIncrement);
+                    too_late_red.setBackgroundColor(colorSlow + colorIncrement);
+                    perfect_green.setBackgroundColor(colorSlow + colorIncrement);
+                    colorSlow2 = colorSlow;
+                    comboBar.getProgressDrawable().setColorFilter(colorSlow2, android.graphics.PorterDuff.Mode.SRC_IN);
+                    rushingBar.setProgress(1);
+                    draggingBar.setProgress(0);
+                    comboBar.setProgress(0);
+//                    comboBar.setVisibility(View.INVISIBLE);
+//                    comboBar.setVisibility(View.GONE);
+                    seekbar.setProgress(((int)beatInterval*2) - (int)periodMs);
+                    combo = 0;
+                    comboOn = 0;
+                    cd = 1;
+                }
+
+                comboBar.setProgress(0);
                 combo_text.setText("Combo : " + Integer.toString(combo));
 //                seekbar.setThumb(getResources().getDrawable( R.drawable.ic_fast_rewind_black_24dp));
 
             }
-            else {
-                if ((beatInterval/1.1 < lastPer) && (lastPer < beatInterval/1.05) || (lastPer == beatInterval/1.1)) {
-                    too_soon_yellow.setBackgroundColor(0xFFFFEB3B);
-                    combo = 0;
-                    combo_text.setText("Combo : " + Integer.toString(combo));
-//                    seekbar.setThumb(getResources().getDrawable( R.drawable.ic_fast_rewind_black_24dp));
-
-                }
                 else {
-                    if ((beatInterval/1.05 < lastPer) && (lastPer < beatInterval/0.95) || (lastPer == beatInterval/1.05)) {
-                        perfect_green.setBackgroundColor(0xFF4CAF50);
-                        combo++;
-                        combo_text.setText("Combo : " + Integer.toString(combo));
+                    if ((beatInterval - toleranceBpm < lastPer) && (lastPer < beatInterval + toleranceBpm) || (lastPer == beatInterval - toleranceBpm)) {
+                        if (lastPer - lastlastPer < -(toleranceBpm * beatInterval) ) {
+                            if (comboOn == 0) {
+
+                            }
+                            else {
+                                too_soon_red.setBackgroundColor(colorFast + colorIncrement);
+                                too_late_red.setBackgroundColor(colorSlow + colorIncrement);
+                                perfect_green.setBackgroundColor(colorSlow + colorIncrement);
+                                colorSlow2 = colorSlow;
+                                comboBar.getProgressDrawable().setColorFilter(colorSlow2, android.graphics.PorterDuff.Mode.SRC_IN);
+                                rushingBar.setProgress(1);
+                                draggingBar.setProgress(0);
+                                comboBar.setProgress(0);
+                                seekbar.setProgress(((int)beatInterval*2) - (int)periodMs);
+//                                comboBar.setVisibility(View.INVISIBLE);
+//                                comboBar.setVisibility(View.GONE);
+                                combo = 0;
+                                comboOn = 0;
+                                cd = 1;
+                            }
+                        }
+                        else {
+                            if (lastPer - lastlastPer > (toleranceBpm * beatInterval)) {
+                                if (comboOn == 0) {
+
+                                }
+                                else {
+                                    comboBar.setVisibility(View.INVISIBLE);
+//                                    comboBar.setVisibility(View.GONE);
+                                    too_soon_red.setBackgroundColor(colorSlow + colorIncrement);
+                                    too_late_red.setBackgroundColor(colorFast + colorIncrement);
+                                    perfect_green.setBackgroundColor(colorSlow + colorIncrement);
+                                    colorSlow2 = colorSlow;
+                                    comboBar.getProgressDrawable().setColorFilter(colorSlow2, android.graphics.PorterDuff.Mode.SRC_IN);
+                                    rushingBar.setProgress(0);
+                                    draggingBar.setProgress(1);
+                                    comboBar.setProgress(0);
+                                    seekbar.setProgress(((int)beatInterval*2) - (int)periodMs);
+                                    combo = 0;
+                                    comboOn = 0;
+                                    cd = 1;
+                                }
+                            }
+                            else {
+                                if (comboOn == 0){
+
+                                }
+                                else {
+                                    too_soon_red.setBackgroundColor(colorSlow + colorIncrement);
+                                    too_late_red.setBackgroundColor(colorSlow + colorIncrement);
+                                    perfect_green.setBackgroundColor(colorFast + colorIncrement);
+                                    rushingBar.setProgress(0);
+                                    draggingBar.setProgress(0);
+//                                    perfect_green.setPadding(64, 64,64,64);
+                                    comboBar.setVisibility(View.VISIBLE);
+                                    comboBar.getProgressDrawable().setColorFilter(colorSlow2, android.graphics.PorterDuff.Mode.SRC_IN);
+//                                    comboBar.setVisibility(View.GONE);
+                                    combo++;
+                                    contList = contList + (int)lastPer + ",\n";
+                                    contTap = contTap + tapCounter + ",\n";
+                                    if (combo > comboMax){
+                                        comboMax = combo;
+                                        score_text.setText("Max : " + comboMax + " | Record : " + f.getString(Settings.getString("bpm", "") + Settings.getString("tolerance", ""), ""));
+                                    }
+                                    _storeComboMax();
+                                    comboBar.incrementProgressBy(1);
+                                    Log.d("combo", Integer.toString(comboBar.getProgress()));
+                                    if (combo%10 == 0 && comboEnd == 0){
+                                        comboEnd = 1;
+                                        comboBar.setProgress(10);
+                                        comboBar.getProgressDrawable().setColorFilter(colorSlow2 + 100, android.graphics.PorterDuff.Mode.SRC_IN);
+
+                                    }
+                                    else {
+                                        if (comboEnd == 1){
+                                            comboEnd = 0;
+                                            comboBar.setProgress(1);
+                                        }
+                                    }
+                                    combo_text.setText("Combo : " + Integer.toString(combo));
+                                }
+                            }
+                        }
+
 //                        seekbar.setThumb(getResources().getDrawable( R.drawable.ic_arrow_drop_down_black_24dp));
 
                     }
-                    else {
-                        if ((beatInterval/0.95 < lastPer) && (lastPer < beatInterval/0.85) || (lastPer == beatInterval/0.95)) {
-                            too_late_yellow.setBackgroundColor(0xFFFFEB3B);
-                            combo = 0;
-                            combo_text.setText("Combo : " + Integer.toString(combo));
-//                            seekbar.setThumb(getResources().getDrawable( R.drawable.ic_fast_forward_black_24dp));
 
-                        }
                         else {
-                            if ((beatInterval/0.85 < lastPer) && (lastPer < beatInterval/0.1) || (lastPer == beatInterval/0.85)) {
-                                too_late_red.setBackgroundColor(0xFFF44336);
-                                combo = 0;
+                            if ((beatInterval + toleranceBpm < lastPer) && (lastPer < beatInterval/0.1) || (lastPer == beatInterval + toleranceBpm)) {
+                                if (comboOn == 0) {
+
+                                }
+                                else {
+//                                    comboBar.setVisibility(View.INVISIBLE);
+//                                    comboBar.setVisibility(View.GONE);
+                                    too_soon_red.setBackgroundColor(colorSlow + colorIncrement);
+                                    too_late_red.setBackgroundColor(colorFast + colorIncrement);
+                                    perfect_green.setBackgroundColor(colorSlow + colorIncrement);
+                                    rushingBar.setProgress(0);
+                                    draggingBar.setProgress(1);
+                                    comboBar.setProgress(0);
+                                    colorSlow2 = colorSlow;
+                                    comboBar.getProgressDrawable().setColorFilter(colorSlow2, android.graphics.PorterDuff.Mode.SRC_IN);
+                                    seekbar.setProgress(((int)beatInterval*2) - (int)periodMs);
+                                    combo = 0;
+                                    comboOn = 0;
+                                    cd = 1;
+                                }
+                                comboBar.setProgress(0);
                                 combo_text.setText("Combo : " + Integer.toString(combo));
 //                                seekbar.setThumb(getResources().getDrawable( R.drawable.ic_fast_forward_black_24dp));
                             }
                             else {
-                                too_late_red.setBackgroundColor(0xFFF44336);
-//								too_soon_red.setBackgroundColor(0xFFF44336);
-                                combo = 0;
+                                if (comboOn == 0) {
+
+                                }
+                                else {
+//                                    comboBar.setVisibility(View.INVISIBLE);
+//                                    comboBar.setVisibility(View.GONE);
+                                    too_soon_red.setBackgroundColor(colorSlow + colorIncrement);
+                                    too_late_red.setBackgroundColor(colorFast + colorIncrement);
+                                    perfect_green.setBackgroundColor(colorSlow + colorIncrement);
+                                    rushingBar.setProgress(0);
+                                    draggingBar.setProgress(1);
+                                    comboBar.setProgress(0);
+                                    colorSlow2 = colorSlow;
+                                    comboBar.getProgressDrawable().setColorFilter(colorSlow2, android.graphics.PorterDuff.Mode.SRC_IN);
+                                    seekbar.setProgress(((int)beatInterval*2) - (int)periodMs);
+                                    combo = 0;
+                                    comboOn = 0;
+                                    cd = 1;
+                                }
+                                comboBar.setProgress(0);
                                 combo_text.setText("Combo : " + Integer.toString(combo));
                             }
                         }
                     }
                 }
             }
-        }
-    }
 
     private void _statistics() {
         stats = new DescriptiveStatistics();
@@ -931,148 +1324,172 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void _setColors () {
-        too_soon_red.setBackgroundColor(0xFFE0E0E0);
-        too_soon_yellow.setBackgroundColor(0xFFE0E0E0);
-        perfect_green.setBackgroundColor(0xFFE0E0E0);
-        too_late_yellow.setBackgroundColor(0xFFE0E0E0);
-        too_late_red.setBackgroundColor(0xFFE0E0E0);
-    }
-    private void _makeFile (int start, int startCounter, int end) {
-        data = "";
-        k = 0;
-        l = start;
-        for(int _repeat208 = 0; _repeat208 < (int)(longestList); _repeat208++) {
-            for(int _repeat248 = startCounter; _repeat248 < (int)(end); _repeat248++) {
-                if (!f.getString("T".concat(String.valueOf((long)(l)).concat(String.valueOf((long)(k)))), "").equals("")) {
-                    data = data.concat(f.getString("T".concat(String.valueOf((long)(l)).concat(String.valueOf((long)(k)))), ""));
-                }
-                else {
-                    data = data.concat("Null,");
-                }
-                l++;
-            }
-            l = start;
-            k++;
-            data = data.concat("\n");
-        }
-        data = data.concat("\n\n");
-        k = 0;
-        l = start;
-        for(int _repeat276 = 0; _repeat276 < (int)(longestList); _repeat276++) {
-            for(int _repeat278 = startCounter; _repeat278 < (int)(end); _repeat278++) {
-                if (!f.getString("S".concat(String.valueOf((long)(l)).concat(String.valueOf((long)(k)))), "").equals("")) {
-                    data = data.concat(f.getString("S".concat(String.valueOf((long)(l)).concat(String.valueOf((long)(k)))), ""));
-                }
-                else {
-                    data = data.concat("Null,");
-                }
-                l++;
-            }
-            l = start;
-            k++;
-            data = data.concat("\n");
-        }
-        data = data.concat("\n\n");
-        k = 0;
-        l = start;
-        for(int _repeat391 = 0; _repeat391 < (int)(longestList); _repeat391++) {
-            for(int _repeat393 = startCounter; _repeat393 < (int)(end); _repeat393++) {
-                if (!f.getString("C".concat(String.valueOf((long)(l)).concat(String.valueOf((long)(k)))), "").equals("")) {
-                    data = data.concat(f.getString("C".concat(String.valueOf((long)(l)).concat(String.valueOf((long)(k)))), ""));
-                }
-                else {
-                    data = data.concat("Null,");
-                }
-                l++;
-            }
-            l = start;
-            k++;
-            data = data.concat("\n");
-        }
-        data = data.concat("\n\n");
-        k = 0;
-        l = start;
-        for(int _repeat429 = 0; _repeat429 < (int)(4); _repeat429++) {
-            for(int _repeat431 = startCounter; _repeat431 < (int)(end); _repeat431++) {
-                if (!f.getString("A".concat(String.valueOf((long)(l)).concat(String.valueOf((long)(k)))), "").equals("")) {
-                    data = data.concat(f.getString("A".concat(String.valueOf((long)(l)).concat(String.valueOf((long)(k)))), ""));
-                }
-                else {
-                    data = data.concat("Null,");
-                }
-                l++;
-            }
-            l = start;
-            k++;
-            data = data.concat("\n");
-        }
-    }
-    private void _syncRepPercentage () {
-        m = 0;
-        tooLateSyncPercent = 0;
-        tooSoonSyncPercent = 0;
-        perfectSyncPercent = 0;
-        while(true) {
-            if (m == audibleBeatsList.size()) {
-                tooSoonSyncPercent = (tooSoonSyncPercent / audibleBeatsList.size()) * 100;
-                perfectSyncPercent = (perfectSyncPercent / audibleBeatsList.size()) * 100;
-                tooLateSyncPercent = (tooLateSyncPercent / audibleBeatsList.size()) * 100;
+//    private void _setColors () {
+//        too_soon_red.setBackgroundColor(0xFFE0E0E0);
+//        too_soon_yellow.setBackgroundColor(0xFFE0E0E0);
+//        perfect_green.setBackgroundColor(0xFFE0E0E0);
+//        too_late_yellow.setBackgroundColor(0xFFE0E0E0);
+//        too_late_red.setBackgroundColor(0xFFE0E0E0);
+//    }
+//    private void _makeFile (int start, int startCounter, int end) {
+//        data = "";
+//        k = 0;
+//        l = start;
+//        for(int _repeat208 = 0; _repeat208 < (int)(longestList); _repeat208++) {
+//            for(int _repeat248 = startCounter; _repeat248 < (int)(end); _repeat248++) {
+//                if (!f.getString("T".concat(String.valueOf((long)(l)).concat(String.valueOf((long)(k)))), "").equals("")) {
+//                    data = data.concat(f.getString("T".concat(String.valueOf((long)(l)).concat(String.valueOf((long)(k)))), ""));
+//                }
+//                else {
+//                    data = data.concat("Null,");
+//                }
+//                l++;
+//            }
+//            l = start;
+//            k++;
+//            data = data.concat("\n");
+//        }
+//        data = data.concat("\n\n");
+//        k = 0;
+//        l = start;
+//        for(int _repeat276 = 0; _repeat276 < (int)(longestList); _repeat276++) {
+//            for(int _repeat278 = startCounter; _repeat278 < (int)(end); _repeat278++) {
+//                if (!f.getString("S".concat(String.valueOf((long)(l)).concat(String.valueOf((long)(k)))), "").equals("")) {
+//                    data = data.concat(f.getString("S".concat(String.valueOf((long)(l)).concat(String.valueOf((long)(k)))), ""));
+//                }
+//                else {
+//                    data = data.concat("Null,");
+//                }
+//                l++;
+//            }
+//            l = start;
+//            k++;
+//            data = data.concat("\n");
+//        }
+//        data = data.concat("\n\n");
+//        k = 0;
+//        l = start;
+//        for(int _repeat391 = 0; _repeat391 < (int)(longestList); _repeat391++) {
+//            for(int _repeat393 = startCounter; _repeat393 < (int)(end); _repeat393++) {
+//                if (!f.getString("C".concat(String.valueOf((long)(l)).concat(String.valueOf((long)(k)))), "").equals("")) {
+//                    data = data.concat(f.getString("C".concat(String.valueOf((long)(l)).concat(String.valueOf((long)(k)))), ""));
+//                }
+//                else {
+//                    data = data.concat("Null,");
+//                }
+//                l++;
+//            }
+//            l = start;
+//            k++;
+//            data = data.concat("\n");
+//        }
+//        data = data.concat("\n\n");
+//        k = 0;
+//        l = start;
+//        for(int _repeat429 = 0; _repeat429 < (int)(4); _repeat429++) {
+//            for(int _repeat431 = startCounter; _repeat431 < (int)(end); _repeat431++) {
+//                if (!f.getString("A".concat(String.valueOf((long)(l)).concat(String.valueOf((long)(k)))), "").equals("")) {
+//                    data = data.concat(f.getString("A".concat(String.valueOf((long)(l)).concat(String.valueOf((long)(k)))), ""));
+//                }
+//                else {
+//                    data = data.concat("Null,");
+//                }
+//                l++;
+//            }
+//            l = start;
+//            k++;
+//            data = data.concat("\n");
+//        }
+//    }
+//    private void _syncRepPercentage () {
+//        m = 0;
+//        tooLateSyncPercent = 0;
+//        tooSoonSyncPercent = 0;
+//        perfectSyncPercent = 0;
+//        while(true) {
+//            if (m == audibleBeatsList.size()) {
+//                tooSoonSyncPercent = (tooSoonSyncPercent / audibleBeatsList.size()) * 100;
+//                perfectSyncPercent = (perfectSyncPercent / audibleBeatsList.size()) * 100;
+//                tooLateSyncPercent = (tooLateSyncPercent / audibleBeatsList.size()) * 100;
+//
+//
+//
+//                break;
+//            }
+//            else {
+//                if (audibleBeatsList.get((int)(m)).doubleValue() > 50) {
+//                    tooLateSyncPercent++;
+//                }
+//                else {
+//                    if (audibleBeatsList.get((int)(m)).doubleValue() < -50) {
+//                        tooSoonSyncPercent++;
+//                    }
+//                    else {
+//                        perfectSyncPercent++;
+//                    }
+//                }
+//                m++;
+//            }
+//        }
+//    }
+//    private void _contRepPercentage () {
+//        m = 0;
+//        tooLateContPercent = 0;
+//        tooSoonContPercent = 0;
+//        perfectContPercent = 0;
+//        while(true) {
+//            if (m == quietBeatsList.size()) {
+//                tooSoonContPercent = (tooSoonContPercent / quietBeatsList.size()) * 100;
+//                perfectContPercent = (perfectContPercent / quietBeatsList.size()) * 100;
+//                tooLateContPercent = (tooLateContPercent / quietBeatsList.size()) * 100;
+//
+//
+//
+//                break;
+//            }
+//            else {
+//                if (quietBeatsList.get((int)(m)).doubleValue() > 50) {
+//                    tooLateContPercent++;
+//                }
+//                else {
+//                    if (quietBeatsList.get((int)(m)).doubleValue() < -50) {
+//                        tooSoonContPercent++;
+//                    }
+//                    else {
+//                        perfectContPercent++;
+//                    }
+//                }
+//                m++;
+//            }
+//        }
+//    }
 
+    private void _storeComboMax() {
 
+        if (f.getString((Settings.getString("bpm", "")) + Settings.getString("tolerance", ""), "").equals("")){
+            f.edit().putString(Settings.getString("bpm", "") + Settings.getString("tolerance", ""), Integer.toString(combo)).apply();
+            score_text.setText("Max : " + comboMax + " | Record : " + f.getString(Settings.getString("bpm", "") + Settings.getString("tolerance", ""), "0"));
 
-                break;
+        }
+        else {
+            if (combo > Integer.parseInt(f.getString(Settings.getString("bpm", "") + Settings.getString("tolerance", ""), ""))) {
+                f.edit().putString(Settings.getString("bpm", "") + Settings.getString("tolerance", ""), Integer.toString(combo)).apply();
+                score_text.setText("Max : " + comboMax + " | Record : " + f.getString(Settings.getString("bpm", "") + Settings.getString("tolerance", ""), "") );
             }
             else {
-                if (audibleBeatsList.get((int)(m)).doubleValue() > 50) {
-                    tooLateSyncPercent++;
-                }
-                else {
-                    if (audibleBeatsList.get((int)(m)).doubleValue() < -50) {
-                        tooSoonSyncPercent++;
-                    }
-                    else {
-                        perfectSyncPercent++;
-                    }
-                }
-                m++;
             }
         }
     }
-    private void _contRepPercentage () {
-        m = 0;
-        tooLateContPercent = 0;
-        tooSoonContPercent = 0;
-        perfectContPercent = 0;
-        while(true) {
-            if (m == quietBeatsList.size()) {
-                tooSoonContPercent = (tooSoonContPercent / quietBeatsList.size()) * 100;
-                perfectContPercent = (perfectContPercent / quietBeatsList.size()) * 100;
-                tooLateContPercent = (tooLateContPercent / quietBeatsList.size()) * 100;
-
-
-
-                break;
-            }
-            else {
-                if (quietBeatsList.get((int)(m)).doubleValue() > 50) {
-                    tooLateContPercent++;
-                }
-                else {
-                    if (quietBeatsList.get((int)(m)).doubleValue() < -50) {
-                        tooSoonContPercent++;
-                    }
-                    else {
-                        perfectContPercent++;
-                    }
-                }
-                m++;
-            }
-        }
-    }
-
 
     private void _getSettings2 () {
+        if (f.getString((Settings.getString("bpm", "") + Settings.getString("tolerance", "")), "").equals("")){
+            score_text.setText("Max : " + comboMax + " | Record : 0" );
+            f.edit().putString(Settings.getString("bpm", "") + Settings.getString("tolerance", ""), "0").apply();
+        }
+        else {
+            score_text.setText("Max : " + comboMax + " | Record : "  + f.getString(Settings.getString("bpm", "") + Settings.getString("tolerance", ""), "") );
+        }
+
         if (Settings.getString("latency", "").equals("")) {
 
         }
@@ -1085,19 +1502,28 @@ public class MainActivity extends AppCompatActivity {
             feedback_per.setMax(1000);
         }
         else {
-            tempo_text.setText(Settings.getString("bpm", "") + " BPM");
+            tempo_text.setText(Settings.getString("bpm", "") + " BPM ± " + Settings.getString("tolerance", "") + " " + Settings.getString(Settings.getString("bpm", ""), "") );
             beatInterval = (60/(Double.parseDouble(Settings.getString("bpm", "")))*1000);
             feedback_per.setMax((int)beatInterval*2);
 
         }
+        if (Settings.getString("tolerance", "").equals("")) {
+            toleranceBpm = 33;
+        }
+        else {
+            toleranceBpm = (Double.parseDouble(Settings.getString("tolerance", "")));
+            toleranceBpm = (toleranceBpm/Double.parseDouble(Settings.getString("bpm", ""))*beatInterval);
+            Log.d("test", Double.toString(toleranceBpm));
+
+        }
         if (Settings.getString("audible_beat", "").equals("")) {
-            audibleBeats = 4;
+            audibleBeats = 0;
         }
         else {
             audibleBeats = Double.parseDouble(Settings.getString("audible_beat", ""));
         }
         if (Settings.getString("quiet_beat", "").equals("")) {
-            quietBeats = 4;
+            quietBeats = 120;
         }
         else {
             quietBeats = Double.parseDouble(Settings.getString("quiet_beat", ""));
@@ -1121,12 +1547,12 @@ public class MainActivity extends AppCompatActivity {
             isChecked = Double.parseDouble(Settings.getString("isChecked", ""));
         }
         if (isChecked == 1) {
-            linear3.setVisibility(View.GONE);
-            linear20.setVisibility(View.VISIBLE);
-            seekbar0.setVisibility(View.VISIBLE);
+            linear3.setVisibility(View.VISIBLE);
+            linear20.setVisibility(View.GONE);
+            seekbar0.setVisibility(View.GONE);
         }
         else {
-            linear3.setVisibility(View.GONE);
+            linear3.setVisibility(View.VISIBLE);
             linear20.setVisibility(View.GONE);
             seekbar0.setVisibility(View.GONE);
         }
@@ -1178,11 +1604,11 @@ public class MainActivity extends AppCompatActivity {
 
         for(i = 0; i < perList.size(); i++){
             if ((beatInterval/1000 < perList.get((int)i)) && (perList.get((int)i) < beatInterval/1.1) || (perList.get((int)i) == beatInterval/1000)) {
-                fast++;
+                fast += 3;
             }
             else {
                 if ((beatInterval/1.1 < perList.get((int)i)) && (perList.get((int)i) < beatInterval/1.05) || (perList.get((int)i) == beatInterval/1.1)) {
-                    fast++;
+                    fast += 3;
                 }
                 else {
                     if ((beatInterval/1.05 < perList.get((int)i)) && (perList.get((int)i) < beatInterval/0.95) || (perList.get((int)i) == beatInterval/1.05)) {
@@ -1190,11 +1616,11 @@ public class MainActivity extends AppCompatActivity {
                     }
                     else {
                         if ((beatInterval/0.95 < perList.get((int)i)) && (perList.get((int)i) < beatInterval/0.85) || (perList.get((int)i) == beatInterval/0.95)) {
-                            slow++;
+                            slow += 3;
                         }
                         else {
                             if ((beatInterval/0.85 < perList.get((int)i)) && (perList.get((int)i) < beatInterval/0.1) || (perList.get((int)i) == beatInterval/0.85)) {
-                                slow++;
+                                slow += 3;
                             }
                             else {
                             }
@@ -1220,121 +1646,125 @@ public class MainActivity extends AppCompatActivity {
         }
         String mean_fb = "Mean Velocity : " + String.format("%.0f", (1000/perMean) * 60) + " bpm";
         String sd_fb = "Variability :  " + "± " + String.format("%.0f", (perSD/perMean) * 60) + " bpm";
-
-
+        String comboMaxString = "Combo : " + Integer.toString(comboMax);
+        fb_post = mean_fb + "\n" + sd_fb + "\n" + comboMaxString +  "\n\n" + tendency_fb;
 
         d.setTitle("Feedback");
-        d.setMessage(mean_fb + "\n" + sd_fb + "\n\n" + tendency_fb);
-
+        d.setMessage(fb_post);
+        d.setCancelable(false);
         d.setPositiveButton("See Chart", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                nChart = (int) numTry - 1;
-                f.edit().putString("nChart",Integer.toString(nChart)).commit();
+                intent.putExtra("afterSession", "1");
                 intent.setClass(getApplicationContext(), ChartActivity.class);
                 startActivity(intent);
                 finish();
+            }
+        });
+        d.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                tapToBegin = 0;
             }
         });
 
         d.create().show();
     }
 
-    private void _feedbackPost () {
-        if (perfectSyncPercent > 75) {
-            feedbackSyncPost = "In time ".concat(String.valueOf((long)(perfectSyncPercent)).concat("% of time during synchronization phase : Well Done. \n"));
-        }
-        else {
-            if (tooSoonSyncPercent > tooLateSyncPercent) {
-                feedbackSyncPost = "Too fast ".concat(String.valueOf((long)(tooSoonSyncPercent)).concat("% of time during synchronization phase : Slow Down. \n"));
-            }
-            else {
-                if (tooSoonSyncPercent < tooLateSyncPercent) {
-                    feedbackSyncPost = "Too slow ".concat(String.valueOf((long)(tooLateSyncPercent)).concat("% of time during synchronization phase : Speed Up. \n"));
-                }
-                else {
-                    feedbackSyncPost = "Too slow and too fast ".concat(String.valueOf((long)(tooLateSyncPercent)).concat("% of time during synchronization phase : Adjust your timing. \n"));
-                }
-            }
-        }
-        if (perfectContPercent > 75) {
-            feedbackCont = "In time ".concat(String.valueOf((long)(perfectContPercent)).concat("% of time during continuation phase : Well Done. "));
-        }
-        else {
-            if (tooSoonContPercent > tooLateContPercent) {
-                feedbackCont = "Too fast ".concat(String.valueOf((long)(tooSoonContPercent)).concat("% of time during continuation phase : Slow Down. "));
-            }
-            else {
-                if (tooSoonContPercent < tooLateContPercent) {
-                    feedbackCont = "Too slow ".concat(String.valueOf((long)(tooLateContPercent)).concat("% of time during continuation phase : Speed Up. "));
-                }
-                else {
-                    feedbackCont = "Too slow and too fast ".concat(String.valueOf((long)(tooLateContPercent)).concat("% of time during continuation phase : Adjust your timing. "));
-                }
-            }
-        }
-        accuracyPercent = "Total Accuracy : ".concat(String.valueOf((long)(accuracyPercentList.get((int)(0)).doubleValue())).concat("%\n")).concat("Synchronization accuracy : ".concat(String.valueOf((long)(accuracyPercentList.get((int)(1)).doubleValue())).concat("%\n")).concat("Continuation accuracy  : ".concat(String.valueOf((long)(accuracyPercentList.get((int)(2)).doubleValue())).concat("%\n\n"))));
-        accuracyRep = "Perfect : Sync. ".concat(String.valueOf((long)(perfectSyncPercent)).concat("% / Cont. ").concat(String.valueOf((long)(perfectContPercent)).concat("%\n"))).concat("Too Fast : Sync. ".concat(String.valueOf((long)(tooSoonSyncPercent)).concat("% / Cont. ").concat(String.valueOf((long)(tooSoonContPercent)).concat("%\n")))).concat("Too Slow : Sync. ".concat(String.valueOf((long)(tooLateSyncPercent)).concat("% / Cont. ").concat(String.valueOf((long)(tooLateContPercent)).concat("%"))));
-        d.setTitle("Feedback");
-        d.setMessage(accuracyPercent.concat(feedbackSyncPost).concat(feedbackCont.concat("\n\n".concat(accuracyRep))));
-        d.create().show();
-    }
-    private void _accuracyPercentage2 (final ArrayList<Double> _list) {
-        if (_list.size() == 0) {
-
-        }
-        else {
-            asynSum = 0;
-            asynMean = 0;
-            iAsynPercentage = 0;
-            accuracyP = 0;
-            for(int _repeat18 = 0; _repeat18 < (int)(_list.size()); _repeat18++) {
-                asynSum = asynSum + Math.abs(_list.get((int)(iAsynPercentage)).doubleValue());
-                iAsynPercentage++;
-            }
-            asynMean = (asynSum * 2) / _list.size();
-            accuracyP = (beatInterval - asynMean) / (beatInterval / 100);
-            accuracyPercentList.add(Double.valueOf(accuracyP));
-        }
-    }
-
-    private void _meanPeriod (final ArrayList<Double> _list) {
-        if (_list.size() == 0) {
-
-        }
-        else {
-            perSum = 0;
-            perMean = 0;
-            iAsynPercentage = 0;
-            accuracyP = 0;
-            for(int _repeat18 = 0; _repeat18 < (int)(_list.size()); _repeat18++) {
-                perSum = perSum + Math.abs(_list.get((int)(iAsynPercentage)).doubleValue());
-                iAsynPercentage++;
-            }
-            perMean = perSum / _list.size();
-//            period_mean.setText(Double.toString(perMean));
-        }
-    }
-
-    private void _storePerList (final ArrayList<Double> _list, final String _string){
-        f.edit().putString(Double.toString(numTry), String.valueOf((long)(perList.size()))).commit();
-    }
-
-    private void _storeList2 (final ArrayList<Double> _list, final String _string) {
-        if (asynList.size() > longestList) {
-            longestList = asynList.size();
-            f.edit().putString("longestList", String.valueOf((long)(asynList.size()))).commit();
-        }
-        k = 0;
-        f.edit().putString(_string.concat(String.valueOf((long)(numTry)).concat(String.valueOf((long)(k)))), "Try ".concat(String.valueOf((long)(numTry))).concat(",")).commit();
-        while(true) {
-            if (k == _list.size()) {
-                break;
-            }
-            else {
-                f.edit().putString(_string.concat(String.valueOf((long)(numTry)).concat(String.valueOf((long)(k + 1)))), String.valueOf((long)(_list.get((int)(k)).doubleValue())).concat(",")).commit();
-                k++;
-            }
-        }
-    }
+//    private void _feedbackPost () {
+//        if (perfectSyncPercent > 75) {
+//            feedbackSyncPost = "In time ".concat(String.valueOf((long)(perfectSyncPercent)).concat("% of time during synchronization phase : Well Done. \n"));
+//        }
+//        else {
+//            if (tooSoonSyncPercent > tooLateSyncPercent) {
+//                feedbackSyncPost = "Too fast ".concat(String.valueOf((long)(tooSoonSyncPercent)).concat("% of time during synchronization phase : Slow Down. \n"));
+//            }
+//            else {
+//                if (tooSoonSyncPercent < tooLateSyncPercent) {
+//                    feedbackSyncPost = "Too slow ".concat(String.valueOf((long)(tooLateSyncPercent)).concat("% of time during synchronization phase : Speed Up. \n"));
+//                }
+//                else {
+//                    feedbackSyncPost = "Too slow and too fast ".concat(String.valueOf((long)(tooLateSyncPercent)).concat("% of time during synchronization phase : Adjust your timing. \n"));
+//                }
+//            }
+//        }
+//        if (perfectContPercent > 75) {
+//            feedbackCont = "In time ".concat(String.valueOf((long)(perfectContPercent)).concat("% of time during continuation phase : Well Done. "));
+//        }
+//        else {
+//            if (tooSoonContPercent > tooLateContPercent) {
+//                feedbackCont = "Too fast ".concat(String.valueOf((long)(tooSoonContPercent)).concat("% of time during continuation phase : Slow Down. "));
+//            }
+//            else {
+//                if (tooSoonContPercent < tooLateContPercent) {
+//                    feedbackCont = "Too slow ".concat(String.valueOf((long)(tooLateContPercent)).concat("% of time during continuation phase : Speed Up. "));
+//                }
+//                else {
+//                    feedbackCont = "Too slow and too fast ".concat(String.valueOf((long)(tooLateContPercent)).concat("% of time during continuation phase : Adjust your timing. "));
+//                }
+//            }
+//        }
+//        accuracyPercent = "Total Accuracy : ".concat(String.valueOf((long)(accuracyPercentList.get((int)(0)).doubleValue())).concat("%\n")).concat("Synchronization accuracy : ".concat(String.valueOf((long)(accuracyPercentList.get((int)(1)).doubleValue())).concat("%\n")).concat("Continuation accuracy  : ".concat(String.valueOf((long)(accuracyPercentList.get((int)(2)).doubleValue())).concat("%\n\n"))));
+//        accuracyRep = "Perfect : Sync. ".concat(String.valueOf((long)(perfectSyncPercent)).concat("% / Cont. ").concat(String.valueOf((long)(perfectContPercent)).concat("%\n"))).concat("Too Fast : Sync. ".concat(String.valueOf((long)(tooSoonSyncPercent)).concat("% / Cont. ").concat(String.valueOf((long)(tooSoonContPercent)).concat("%\n")))).concat("Too Slow : Sync. ".concat(String.valueOf((long)(tooLateSyncPercent)).concat("% / Cont. ").concat(String.valueOf((long)(tooLateContPercent)).concat("%"))));
+//        d.setTitle("Feedback");
+//        d.setMessage(accuracyPercent.concat(feedbackSyncPost).concat(feedbackCont.concat("\n\n".concat(accuracyRep))));
+//        d.create().show();
+//    }
+//    private void _accuracyPercentage2 (final ArrayList<Double> _list) {
+//        if (_list.size() == 0) {
+//
+//        }
+//        else {
+//            asynSum = 0;
+//            asynMean = 0;
+//            iAsynPercentage = 0;
+//            accuracyP = 0;
+//            for(int _repeat18 = 0; _repeat18 < (int)(_list.size()); _repeat18++) {
+//                asynSum = asynSum + Math.abs(_list.get((int)(iAsynPercentage)).doubleValue());
+//                iAsynPercentage++;
+//            }
+//            asynMean = (asynSum * 2) / _list.size();
+//            accuracyP = (beatInterval - asynMean) / (beatInterval / 100);
+//            accuracyPercentList.add(Double.valueOf(accuracyP));
+//        }
+//    }
+//
+//    private void _meanPeriod (final ArrayList<Double> _list) {
+//        if (_list.size() == 0) {
+//
+//        }
+//        else {
+//            perSum = 0;
+//            perMean = 0;
+//            iAsynPercentage = 0;
+//            accuracyP = 0;
+//            for(int _repeat18 = 0; _repeat18 < (int)(_list.size()); _repeat18++) {
+//                perSum = perSum + Math.abs(_list.get((int)(iAsynPercentage)).doubleValue());
+//                iAsynPercentage++;
+//            }
+//            perMean = perSum / _list.size();
+////            period_mean.setText(Double.toString(perMean));
+//        }
+//    }
+//
+//    private void _storePerList (final ArrayList<Double> _list, final String _string){
+//        f.edit().putString(Double.toString(numTry), String.valueOf((long)(perList.size()))).commit();
+//    }
+//
+//    private void _storeList2 (final ArrayList<Double> _list, final String _string) {
+//        if (asynList.size() > longestList) {
+//            longestList = asynList.size();
+//            f.edit().putString("longestList", String.valueOf((long)(asynList.size()))).commit();
+//        }
+//        k = 0;
+//        f.edit().putString(_string.concat(String.valueOf((long)(numTry)).concat(String.valueOf((long)(k)))), "Try ".concat(String.valueOf((long)(numTry))).concat(",")).commit();
+//        while(true) {
+//            if (k == _list.size()) {
+//                break;
+//            }
+//            else {
+//                f.edit().putString(_string.concat(String.valueOf((long)(numTry)).concat(String.valueOf((long)(k + 1)))), String.valueOf((long)(_list.get((int)(k)).doubleValue())).concat(",")).commit();
+//                k++;
+//            }
+//        }
+//    }
 
 }

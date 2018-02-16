@@ -1,4 +1,4 @@
-#Tue Feb 06 17:54:43 CET 2018
-base.0=C\:\\Users\\Julien\\Desktop\\Inner Pulse 3\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\7
+#Fri Feb 16 11:44:35 CET 2018
+base.0=C\:\\Users\\Julien\\Desktop\\Inner Pulse 3\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\102
 path.0=classes.dex
 renamed.0=classes.dex

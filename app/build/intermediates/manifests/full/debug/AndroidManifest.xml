@@ -5,7 +5,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="19"
+        android:minSdkVersion="21"
         android:targetSdkVersion="26" />
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -13,6 +13,8 @@
     <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <meta-data
         android:name="android.support.VERSION"
@@ -21,7 +23,7 @@
     <application
         android:allowBackup="true"
         android:debuggable="true"
-        android:icon="@drawable/app_icon"
+        android:icon="@mipmap/ic_launcher"
         android:label="Inner Pulse"
         android:testOnly="true"
         android:theme="@style/AppTheme" >
@@ -57,9 +59,14 @@
         </activity>
         <activity
             android:name="com.my.newproject.DataActivity"
-            android:label="Data"
-            android:screenOrientation="portrait" />
-        <activity android:name="com.my.newproject.ChartActivity" />
+            android:label="Data Collection"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.my.newproject.ChartActivity"
+            android:label="Chart"
+            android:screenOrientation="portrait" >
+        </activity>
     </application>
 
 </manifest>

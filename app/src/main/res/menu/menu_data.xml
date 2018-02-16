@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_information"
+        android:icon="@drawable/ic_clear_all_black_24dp"
+        app:showAsAction="ifRoom"
+        android:title="Informations">
+
+        <menu android:id="@+id/sub_menu">
+            <!--<item android:id="@+id/save"-->
+                <!--android:title="Send Data"   />-->
+
+            <item android:id="@+id/clear_data"
+                android:title="Clear Data"  />
+        </menu>
+    </item>
+</menu>
