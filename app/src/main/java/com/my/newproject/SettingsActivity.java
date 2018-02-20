@@ -77,6 +77,13 @@ public class SettingsActivity extends AppCompatActivity {
 	private int maxBeats = 200;
 	private int minBeats = 30;
 	private Switch reaction_time_switch;
+	private Switch distractor_switch;
+	private SeekBar seekBarFrequency;
+	private TextView frequency_text;
+
+	private int stepFrequency = 1;
+	private int maxFrequency = 9;
+	private int minFrequency = 3;
 
 
 	@Override
@@ -114,6 +121,7 @@ public class SettingsActivity extends AppCompatActivity {
         repetition_edit = (EditText) findViewById(R.id.repetition_edit);
 		im_switch = (Switch) findViewById(R.id.im_switch);
 		reaction_time_switch = (Switch) findViewById(R.id.reaction_switch);
+//		distractor_switch = (Switch) findViewById(R.id.distractor_switch);
 		send_start_text = (TextView) findViewById(R.id.send_start_text);
 		send_start = (TextView) findViewById(R.id.send_start);
 		send_start_edit = (EditText) findViewById(R.id.send_start_edit);
@@ -123,6 +131,10 @@ public class SettingsActivity extends AppCompatActivity {
 		seekBarBpm = (SeekBar) findViewById(R.id.seekBarBpm);
 		seekBarTolerance = (SeekBar) findViewById(R.id.seekbarTolerance);
 		seekBarBeats = (SeekBar) findViewById(R.id.seekbarBeats);
+		seekBarFrequency = (SeekBar) findViewById(R.id.seekBarFrequency);
+		frequency_text = (TextView) findViewById(R.id.frequency_text);
+
+
 		f = getSharedPreferences("Settings", Activity.MODE_PRIVATE);
 
 
@@ -239,6 +251,17 @@ public class SettingsActivity extends AppCompatActivity {
 				}
 			}
 		});
+//		distractor_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//			@Override
+//			public void onCheckedChanged(CompoundButton _buttonView, final boolean _isChecked)  {
+//				if (_isChecked) {
+//					f.edit().putString("distractor_switch_is_checked", "1").commit();
+//				}
+//				else {
+//					f.edit().putString("distractor_switch_is_checked", "0").commit();
+//				}
+//			}
+//		});
 		send_start_edit.addTextChangedListener(new TextWatcher() {
 			@Override
 			public void beforeTextChanged(CharSequence _text, int _start, int _count, int _after) {
@@ -295,6 +318,39 @@ public class SettingsActivity extends AppCompatActivity {
 					}
 				}
 		);
+
+		frequency_text.setText(seekBarFrequency.getProgress() + "/" + seekBarFrequency.getMax());
+
+		seekBarFrequency.setMax( (maxFrequency - minFrequency) / stepFrequency );
+
+		seekBarFrequency.setOnSeekBarChangeListener(
+				new SeekBar.OnSeekBarChangeListener()
+				{
+					@Override
+					public void onStopTrackingTouch(SeekBar seekBar) {}
+
+					@Override
+					public void onStartTrackingTouch(SeekBar seekBar) {}
+
+					@Override
+					public void onProgressChanged(SeekBar seekBar, int progress,
+												  boolean fromUser)
+					{
+						// Ex :
+						// And finally when you want to retrieve the value in the range you
+						// wanted in the first place -> [3-5]
+						//
+						// if progress = 13 -> value = 3 + (13 * 0.1) = 4.3
+						int value = minFrequency + (progress * stepFrequency);
+						frequency_text.setText(("After " + value + " taps combo"));
+						f.edit().putString("frequency", String.valueOf(value)).apply();
+
+					}
+				}
+		);
+
+
+
 
 		tolerance.setText(seekBarTolerance.getProgress() + "/" + seekBarTolerance.getMax());
 
@@ -374,6 +430,16 @@ public class SettingsActivity extends AppCompatActivity {
 			seekBarBpm.setProgress(Integer.parseInt(f.getString("bpm", "")) - 30);
 		}
 
+		if((f.getString("frequency", "")).equals("")){
+			f.edit().putString("frequency", "3").apply();
+			seekBarFrequency.setProgress(3);
+			frequency_text.setText("After 3 taps combo");
+		}
+		else {
+			frequency_text.setText("After " + (f.getString("frequency", "")) + " taps combo");
+			seekBarFrequency.setProgress(Integer.parseInt(f.getString("frequency", "")) - 3);
+		}
+
 		if((f.getString("tolerance", "")).equals("")){
 			f.edit().putString("tolerance", "40").apply();
 			seekBarTolerance.setProgress(0);
@@ -438,6 +504,17 @@ public class SettingsActivity extends AppCompatActivity {
 				reaction_time_switch.setChecked(false);
 			}
 		}
+//		if(f.getString("distractor_switch_is_checked", "").equals("")){
+//			distractor_switch.setChecked(false);
+//		}
+//		else {
+//			if (Double.parseDouble(f.getString("distractor_switch_is_checked", "")) == 1) {
+//				distractor_switch.setChecked(true);
+//			}
+//			else {
+//				distractor_switch.setChecked(false);
+//			}
+//		}
 	}
 
 	@Override

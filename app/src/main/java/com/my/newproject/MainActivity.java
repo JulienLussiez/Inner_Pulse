@@ -73,7 +73,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     private int inc = 0;
+    private int distractorIsChecked = 0;
     private int reactionTime = 1000;
+    private int distractor = 12;
     private int reaction = 0;
     private int color = 0;
     private int comboEnd = 0;
@@ -174,6 +176,7 @@ public class MainActivity extends AppCompatActivity {
     private Timer _timer = new Timer();
     private Timer _timer2 = new Timer();
     private Timer _timer3 = new Timer();
+    private Timer _timer4 = new Timer();
     private Calendar calendar = Calendar.getInstance();
     private TimerTask timer;
     private TimerTask timer2;
@@ -226,6 +229,8 @@ public class MainActivity extends AppCompatActivity {
     private String toleranceConversionString;
     private int randomReactionActivation;
     private double reactionTimeIsChecked;
+    private int frequency;
+    private TimerTask timer4;
 
 
     @Override
@@ -325,6 +330,9 @@ public class MainActivity extends AppCompatActivity {
                     }
                     if (timer3 != null){
                         timer3.cancel();
+                    }
+                    if (timer4 != null){
+                        timer4.cancel();
                     }
                 }
                 finish();
@@ -574,6 +582,9 @@ public class MainActivity extends AppCompatActivity {
                     if (timer3 != null){
                         timer3.cancel();
                     }
+                    if (timer4 != null){
+                        timer4.cancel();
+                    }
                 }
                 finish();
             }
@@ -712,6 +723,9 @@ public class MainActivity extends AppCompatActivity {
                     if (timer3 != null){
                         timer3.cancel();
                     }
+                    if (timer4 != null){
+                        timer4.cancel();
+                    }
 //                    countdown.cancel();
                     canTap = false;
                     tap.setText("Tap to start");
@@ -766,6 +780,9 @@ public class MainActivity extends AppCompatActivity {
             }
             if (timer3 != null){
                 timer3.cancel();
+            }
+            if (timer4 != null){
+                timer4.cancel();
             }
             play.setText("Play");
             fab.setImageResource(R.drawable.ic_play_arrow_black_24dp);
@@ -870,6 +887,9 @@ public class MainActivity extends AppCompatActivity {
                             if (timer3 != null){
                                 timer3.cancel();
                             }
+                            if (timer4 != null){
+                                timer4.cancel();
+                            }
                             double a = 1;
                             Date date = new Date();
                             SimpleDateFormat ft = new SimpleDateFormat ("yyyy.MM.dd hh:mm:ss");
@@ -937,7 +957,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void _randomReaction() {
         reactionTime = 1000;
-        double time = beatInterval + Math.random() * (2*(beatInterval) - beatInterval) ;
+        double time = Math.random() * (3*(beatInterval)) ;
         timer2 = new TimerTask() {
             @Override
             public void run() {
@@ -956,6 +976,31 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         _timer2.scheduleAtFixedRate(timer2, (int)time, 500);
+    }
+
+    private void _auditiveDistractor() {
+        int interval = (int) ((int) beatInterval - Math.random()*300);
+        timer4 = new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (distractor != 0) {
+                            playSound = sp.play((int)(soundID), 1.0f, 1.0f, 1, (int)(0), 1.0f);
+                            distractor--;
+                        }
+                        else {
+                            distractor = 12;
+                            if (timer4 != null){
+                                timer4.cancel();
+                            }
+                        }
+                    }
+                });
+            }
+        };
+        _timer4.scheduleAtFixedRate(timer4, 0, interval);
     }
 
     private void _decreaseReactionTime() {
@@ -1371,9 +1416,12 @@ public class MainActivity extends AppCompatActivity {
                                     combo++;
                                     contList = contList + (int)lastPer + ",\n";
                                     contTap = contTap + tapCounter + ",\n";
-                                    if (combo%3 == 0 && reaction == 0) {
+                                    if (combo%frequency == 0 && reaction == 0) {
                                         if (tap2.getVisibility() == tap2.VISIBLE){
                                             _randomReaction();
+                                        }
+                                        if (distractorIsChecked == 1 && distractor == 12){
+                                            _auditiveDistractor();
                                         }
                                     }
                                     if (combo > comboMax){
@@ -1387,7 +1435,6 @@ public class MainActivity extends AppCompatActivity {
                                         comboEnd = 1;
                                         comboBar.setProgress(10);
                                         comboBar.getProgressDrawable().setColorFilter(colorSlow2 + 100, android.graphics.PorterDuff.Mode.SRC_IN);
-
                                     }
                                     else {
                                         if (comboEnd == 1){
@@ -1663,6 +1710,17 @@ public class MainActivity extends AppCompatActivity {
             feedback_per.setMax((int)beatInterval*2);
 
         }
+
+        if (Settings.getString("frequency", "").equals("")) {
+            frequency = 3;
+            Settings.edit().putString("frequency", "3").apply();
+
+        }
+        else {
+            frequency = Integer.parseInt((Settings.getString("frequency", "")));
+        }
+
+
 //        if (Settings.getString("tolerance", "").equals("")) {
 //            toleranceBpm = 33;
 //        }
@@ -1733,6 +1791,7 @@ public class MainActivity extends AppCompatActivity {
             linear20.setVisibility(View.GONE);
             seekbar0.setVisibility(View.GONE);
         }
+
         if (Settings.getString("reaction_switch_is_checked", "").equals("")) {
             tap2.setVisibility(View.GONE);
         }
@@ -1745,6 +1804,18 @@ public class MainActivity extends AppCompatActivity {
         else {
             tap2.setVisibility(View.GONE);
         }
+
+        if (Settings.getString("distractor_switch_is_checked", "").equals("")) {
+            distractorIsChecked = 0;
+        }
+        else {
+            distractorIsChecked = Integer.parseInt(Settings.getString("distractor_switch_is_checked", ""));
+        }
+        if (distractorIsChecked == 1) {
+        }
+        else {
+        }
+
         if (f.getString("numTry", "").equals("")) {
 
         }
