@@ -44,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout linear3;
     private LinearLayout linear20;
     private Button tap;
+    private Button tap2;
+    private Button tap3;
     private Button play;
     private Button settings;
     private Button send;
@@ -71,6 +73,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     private int inc = 0;
+    private int reactionTime = 1000;
+    private int reaction = 0;
+    private int color = 0;
     private int comboEnd = 0;
     private int tapToBegin = 0;
     private int comboMax;
@@ -167,8 +172,12 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Double> accuracyPercentList = new ArrayList<Double>();
 
     private Timer _timer = new Timer();
+    private Timer _timer2 = new Timer();
+    private Timer _timer3 = new Timer();
     private Calendar calendar = Calendar.getInstance();
     private TimerTask timer;
+    private TimerTask timer2;
+    private TimerTask timer3;
     private SoundPool sp;
     private Intent intent = new Intent();
     private SharedPreferences fAsyn;
@@ -215,6 +224,8 @@ public class MainActivity extends AppCompatActivity {
     private int colorFast = 0xFF00796b;
     private double toleranceConversion;
     private String toleranceConversionString;
+    private int randomReactionActivation;
+    private double reactionTimeIsChecked;
 
 
     @Override
@@ -307,8 +318,15 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("repetition", getIntent().getStringExtra("repetition"));
                 intent.putExtra("isCheckedIm", getIntent().getStringExtra("isCheckedIm"));
                 startActivity(intent);
-                if (play.getText().toString().equals("Stop"))
+                if (play.getText().toString().equals("Stop")) {
                     timer.cancel();
+                    if (timer2 != null){
+                        timer2.cancel();
+                    }
+                    if (timer3 != null){
+                        timer3.cancel();
+                    }
+                }
                 finish();
                 return true;
 //            case R.id.save:
@@ -344,6 +362,8 @@ public class MainActivity extends AppCompatActivity {
         linear20 = (LinearLayout) findViewById(R.id.linear20);
         seekbar0 = (CustomSeekBar) findViewById(R.id.seekBar0);
         tap = (Button) findViewById(R.id.tap);
+        tap2 = (Button) findViewById(R.id.tap2);
+        tap3 = (Button) findViewById(R.id.tap3);
         play = (Button) findViewById(R.id.play);
         settings = (Button) findViewById(R.id.settings);
         send = (Button) findViewById(R.id.send);
@@ -374,6 +394,8 @@ public class MainActivity extends AppCompatActivity {
         Settings = getSharedPreferences("Settings", Activity.MODE_PRIVATE);
         d = new AlertDialog.Builder(this);
 
+        tap2.setBackgroundColor((getResources().getColor(R.color.slow)));
+
         _setColors();
         _setProgressBar();
 
@@ -388,6 +410,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+//                    playSound = sp.play((int)(soundID), 1.0f, 1.0f, 1, (int)(0), 1.0f);
                     if (tapToBegin == 0) {
                         tapToBegin = 1;
                         fab.setImageResource(R.drawable.ic_stop_black_24dp);
@@ -442,6 +465,38 @@ public class MainActivity extends AppCompatActivity {
                             firstTapInterval = 1;
                         }
                     }
+
+                return false;
+            }
+
+        });
+
+        tap2.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    if (timer2 != null){
+                        timer2.cancel();
+                    }
+                    if (timer3 != null){
+                        timer3.cancel();
+                    }
+                    reaction = 0;
+                    tap2.setBackgroundColor((getResources().getColor(R.color.slow)));
+                }
+
+                return false;
+            }
+
+        });
+
+        tap3.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    timer3.cancel();
+                    tap3.setBackgroundColor((getResources().getColor(R.color.blue)));
+                }
 
                 return false;
             }
@@ -511,8 +566,15 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("repetition", getIntent().getStringExtra("repetition"));
                 intent.putExtra("isCheckedIm", getIntent().getStringExtra("isCheckedIm"));
                 startActivity(intent);
-                if (play.getText().toString().equals("Stop"))
+                if (play.getText().toString().equals("Stop")) {
                     timer.cancel();
+                    if (timer2 != null){
+                        timer2.cancel();
+                    }
+                    if (timer3 != null){
+                        timer3.cancel();
+                    }
+                }
                 finish();
             }
         });
@@ -641,8 +703,15 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 else{
-                    if (timer != null)
+                    if (timer != null){
                         timer.cancel();
+                    }
+                    if (timer2 != null){
+                        timer2.cancel();
+                    }
+                    if (timer3 != null){
+                        timer3.cancel();
+                    }
 //                    countdown.cancel();
                     canTap = false;
                     tap.setText("Tap to start");
@@ -692,6 +761,12 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
         if (play.getText().toString().equals("Stop") || fab_play == 1) {
             timer.cancel();
+            if (timer2 != null){
+                timer2.cancel();
+            }
+            if (timer3 != null){
+                timer3.cancel();
+            }
             play.setText("Play");
             fab.setImageResource(R.drawable.ic_play_arrow_black_24dp);
             fab_play = 0;
@@ -789,6 +864,12 @@ public class MainActivity extends AppCompatActivity {
                             seekbar.setProgress(((int)beatInterval));
                             tap.setText("Tap to start");
                             timer.cancel();
+                            if (timer2 != null){
+                                timer2.cancel();
+                            }
+                            if (timer3 != null){
+                                timer3.cancel();
+                            }
                             double a = 1;
                             Date date = new Date();
                             SimpleDateFormat ft = new SimpleDateFormat ("yyyy.MM.dd hh:mm:ss");
@@ -852,6 +933,52 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         _timer.scheduleAtFixedRate(timer, (int)(0), (int)(beatInterval));
+    }
+
+    private void _randomReaction() {
+        reactionTime = 1000;
+        double time = beatInterval + Math.random() * (2*(beatInterval) - beatInterval) ;
+        timer2 = new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                            if (reaction == 0) {
+                                reaction = 1;
+                                playSound = sp.play((int)(soundID), 1.0f, 1.0f, 1, (int)(0), 1.0f);
+                                tap2.setBackgroundColor((getResources().getColor(R.color.very_fast)));
+                                _decreaseReactionTime();
+                                timer2.cancel();
+                            }
+                    }
+                });
+            }
+        };
+        _timer2.scheduleAtFixedRate(timer2, (int)time, 500);
+    }
+
+    private void _decreaseReactionTime() {
+        timer3 = new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (reactionTime >= 0){
+                            tap2.setText(Integer.toString(reactionTime--));
+                        }
+                        else {
+                            if (timer3 != null){
+                                timer3.cancel();
+                                reaction =  0;
+                            }
+                        }
+                    }
+                });
+            }
+        };
+        _timer3.scheduleAtFixedRate(timer3, 0, 1);
     }
 
 //    private void _makeAsynList () {
@@ -1161,7 +1288,11 @@ public class MainActivity extends AppCompatActivity {
 //                    comboBar.setVisibility(View.GONE);
                     seekbar.setProgress(((int)beatInterval*2) - (int)periodMs);
                     combo = 0;
-                    comboOn = 0;
+                    randomReactionActivation = 0;
+                    if (timer2 != null){
+                        timer2.cancel();
+                    }
+//                    comboOn = 0;
                     cd = 1;
                 }
 
@@ -1189,7 +1320,11 @@ public class MainActivity extends AppCompatActivity {
 //                                comboBar.setVisibility(View.INVISIBLE);
 //                                comboBar.setVisibility(View.GONE);
                                 combo = 0;
-                                comboOn = 0;
+                                randomReactionActivation = 0;
+                                if (timer2 != null){
+                                    timer2.cancel();
+                                }
+//                                comboOn = 0;
                                 cd = 1;
                             }
                         }
@@ -1211,7 +1346,11 @@ public class MainActivity extends AppCompatActivity {
                                     comboBar.setProgress(0);
                                     seekbar.setProgress(((int)beatInterval*2) - (int)periodMs);
                                     combo = 0;
-                                    comboOn = 0;
+                                    randomReactionActivation = 0;
+                                    if (timer2 != null){
+                                        timer2.cancel();
+                                    }
+//                                    comboOn = 0;
                                     cd = 1;
                                 }
                             }
@@ -1232,6 +1371,11 @@ public class MainActivity extends AppCompatActivity {
                                     combo++;
                                     contList = contList + (int)lastPer + ",\n";
                                     contTap = contTap + tapCounter + ",\n";
+                                    if (combo%3 == 0 && reaction == 0) {
+                                        if (tap2.getVisibility() == tap2.VISIBLE){
+                                            _randomReaction();
+                                        }
+                                    }
                                     if (combo > comboMax){
                                         comboMax = combo;
                                         score_text.setText("Max : " + comboMax + " | Record : " + f.getString(Settings.getString("bpm", "") + Settings.getString("tolerance", ""), ""));
@@ -1278,7 +1422,11 @@ public class MainActivity extends AppCompatActivity {
                                     comboBar.getProgressDrawable().setColorFilter(colorSlow2, android.graphics.PorterDuff.Mode.SRC_IN);
                                     seekbar.setProgress(((int)beatInterval*2) - (int)periodMs);
                                     combo = 0;
-                                    comboOn = 0;
+                                    randomReactionActivation = 0;
+                                    if (timer2 != null){
+                                        timer2.cancel();
+                                    }
+//                                    comboOn = 0;
                                     cd = 1;
                                 }
                                 comboBar.setProgress(0);
@@ -1302,7 +1450,11 @@ public class MainActivity extends AppCompatActivity {
                                     comboBar.getProgressDrawable().setColorFilter(colorSlow2, android.graphics.PorterDuff.Mode.SRC_IN);
                                     seekbar.setProgress(((int)beatInterval*2) - (int)periodMs);
                                     combo = 0;
-                                    comboOn = 0;
+                                    randomReactionActivation = 0;
+                                    if (timer2 != null){
+                                        timer2.cancel();
+                                    }
+//                                    comboOn = 0;
                                     cd = 1;
                                 }
                                 comboBar.setProgress(0);
@@ -1580,6 +1732,18 @@ public class MainActivity extends AppCompatActivity {
             linear3.setVisibility(View.VISIBLE);
             linear20.setVisibility(View.GONE);
             seekbar0.setVisibility(View.GONE);
+        }
+        if (Settings.getString("reaction_switch_is_checked", "").equals("")) {
+            tap2.setVisibility(View.GONE);
+        }
+        else {
+            reactionTimeIsChecked = Double.parseDouble(Settings.getString("reaction_switch_is_checked", ""));
+        }
+        if (reactionTimeIsChecked == 1) {
+            tap2.setVisibility(View.VISIBLE);
+        }
+        else {
+            tap2.setVisibility(View.GONE);
         }
         if (f.getString("numTry", "").equals("")) {
 

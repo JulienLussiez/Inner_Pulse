@@ -106,7 +106,7 @@
 			android:layout_column="1"
 			android:layout_row="1"
 			android:padding="8dp"
-			android:text="34"
+			android:text="40"
 			android:textColor="#000000"
 			android:textSize="12sp" />
 
@@ -179,6 +179,85 @@
 			android:layout_weight="1" />
 
 	</GridLayout>
+
+	<LinearLayout
+		android:id="@+id/perturbations"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:padding="8dp"
+		android:orientation="horizontal"
+		>
+
+		<TextView
+			android:id="@+id/perturbations_text"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:padding="8dp"
+			android:text="Perturbations"
+			android:textColor="#008dcd"
+			android:textSize="16sp" />
+
+
+	</LinearLayout>
+
+	<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		xmlns:tools="http://schemas.android.com/tools"
+		android:id="@+id/GridLayout2"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:columnCount="4"
+		android:padding="8dp"
+		android:rowCount="4"
+		tools:context=".GridXMLActivity">
+
+		<TextView
+			android:id="@+id/reaction_text"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_column="0"
+			android:layout_row="0"
+			android:padding="8dp"
+			android:text="Reaction Time"
+			android:textColor="#000000"
+			android:textSize="12sp" />
+
+		<Switch
+			android:id="@+id/reaction_switch"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_column="1"
+			android:layout_row="0"
+			android:padding="8dp"
+			android:text=""
+			android:textColor="#000000"
+			android:textSize="12sp"
+			tools:checked="false" />
+
+		<TextView
+			android:id="@+id/distractor_text"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_column="0"
+			android:layout_row="1"
+			android:padding="8dp"
+			android:text="Auditory Distractor"
+			android:textColor="#000000"
+			android:textSize="12sp" />
+
+		<Switch
+			android:id="@+id/distractor_switch"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_column="1"
+			android:layout_row="1"
+			android:padding="8dp"
+			android:text=""
+			android:textColor="#000000"
+			android:textSize="12sp"
+			tools:checked="false" />
+
+	</GridLayout>
+
 
 	<LinearLayout
 		android:id="@+id/linear5"

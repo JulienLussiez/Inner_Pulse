@@ -24,14 +24,14 @@
         app:layout_constraintTop_toBottomOf="@+id/bpmChart" />
 
     <TextView
-        android:id="@+id/bpmChart"
+        android:id="@+id/bpmtitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_weight="1"
-        android:text="TAPS"
+        android:text="BPM"
         android:textAlignment="viewStart"
         android:textColor="#000"
         android:textSize="14sp"
@@ -42,15 +42,33 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/bpmChart"
+        android:layout_width="0dp"
+        android:layout_height="17dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_weight="1"
+        android:text="Rushing"
+        android:textAlignment="viewStart"
+        android:textColor="#000"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bpmtitle" />
+
+    <TextView
         android:id="@+id/textView3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="8dp"
         android:gravity="right"
-        android:text="Rushing"
+        android:text="TAPS"
         android:textColor="#000"
-        android:textSize="12sp"
+        android:textSize="14sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/graph" />
 

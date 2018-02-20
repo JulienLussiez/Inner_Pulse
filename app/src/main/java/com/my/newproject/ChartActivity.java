@@ -3,9 +3,7 @@ package com.my.newproject;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -19,7 +17,6 @@ import android.widget.TextView;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.DataPointInterface;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.jjoe64.graphview.series.PointsGraphSeries;
 
@@ -37,12 +34,12 @@ public class ChartActivity extends AppCompatActivity {
     private String nChart;
     private int i;
     private Intent intent = new Intent();
-    private PointsGraphSeries<DataPoint> mSeries1;
+    private LineGraphSeries<DataPoint> mSeries1;
     private LineGraphSeries<DataPoint> serie;
     private LineGraphSeries<DataPoint> serie2;
     private LineGraphSeries<DataPoint> serie3;
     private PointsGraphSeries<DataPoint> sync;
-    private PointsGraphSeries<DataPoint> cont;
+    private LineGraphSeries<DataPoint> cont;
     private List<String> trialList;
     private String afterSession;
     private Button sendData;
@@ -54,10 +51,10 @@ public class ChartActivity extends AppCompatActivity {
     private List<String> syncTap;
     private List<String> contTap;
     private double beatInterval;
-    private PointsGraphSeries<DataPoint> min;
-    private PointsGraphSeries<DataPoint> max;
-    private PointsGraphSeries<DataPoint> middle;
-    private PointsGraphSeries<DataPoint> mSeries2;
+    private LineGraphSeries<DataPoint> min;
+    private LineGraphSeries<DataPoint> max;
+    private LineGraphSeries<DataPoint> middle;
+    private LineGraphSeries<DataPoint> mSeries2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,11 +80,11 @@ public class ChartActivity extends AppCompatActivity {
         graph.removeAllSeries();
         beatInterval = (60/Double.parseDouble((Settings.getString("bpm", ""))))*1000;
 //        sync = new PointsGraphSeries<DataPoint>(generateData5());
-        cont = new PointsGraphSeries<DataPoint>(generateData6());
-        min = new PointsGraphSeries<>(generateData7());
-        max = new PointsGraphSeries<>(generateData8());
-        middle = new PointsGraphSeries<>(generateData10());
-        mSeries1 = new PointsGraphSeries<>(generateData());
+        cont = new LineGraphSeries<DataPoint>(generateData6());
+        min = new LineGraphSeries<>(generateData7());
+        max = new LineGraphSeries<>(generateData8());
+        middle = new LineGraphSeries<>(generateData10());
+        mSeries1 = new LineGraphSeries<>(generateData());
 //        mSeries2 = new PointsGraphSeries<DataPoint>(generateData9());
 //        serie = new LineGraphSeries<>(generateData2());
 //        serie2 = new LineGraphSeries<>(generateData3());
@@ -97,24 +94,24 @@ public class ChartActivity extends AppCompatActivity {
 //        serie3.setColor(this.getResources().getColor(R.color.good));
 
         // set manual X bounds
-        graph.getViewport().setYAxisBoundsManual(true);
-        graph.getViewport().setMinY(0);
-        graph.getViewport().setMaxY(Double.parseDouble((f.getString(nChart  + "beats", ""))));
+        graph.getViewport().setXAxisBoundsManual(true);
+        graph.getViewport().setMinX(0);
+        graph.getViewport().setMaxX(Double.parseDouble((f.getString(nChart  + "beats", ""))));
 
         // set manual Y bounds
-        graph.getViewport().setXAxisBoundsManual(true);
-        graph.getViewport().setMinX(Double.parseDouble((f.getString(nChart  + "bpm", ""))) - 30);
-        graph.getViewport().setMaxX(Double.parseDouble((f.getString(nChart  + "bpm", ""))) + 30);
+        graph.getViewport().setYAxisBoundsManual(true);
+        graph.getViewport().setMinY(Double.parseDouble((f.getString(nChart  + "bpm", ""))) - (Double.parseDouble((f.getString(nChart  + "bpm", ""))))/1.5);
+        graph.getViewport().setMaxY(Double.parseDouble((f.getString(nChart  + "bpm", ""))) + (Double.parseDouble((f.getString(nChart  + "bpm", ""))))/1.5);
 
         mSeries1.setColor(Color.BLACK);
-        mSeries1.setCustomShape(new PointsGraphSeries.CustomShape() {
-            @Override
-            public void draw(Canvas canvas, Paint paint, float x, float y, DataPointInterface dataPoint) {
-                paint.setStrokeWidth(3);
-                canvas.drawLine(x-4, y-4, x+4, y+4, paint);
-                canvas.drawLine(x+4, y-4, x-4, y+4, paint);
-            }
-        });
+//        mSeries1.setCustomShape(new PointsGraphSeries.CustomShape() {
+//            @Override
+//            public void draw(Canvas canvas, Paint paint, float x, float y, DataPointInterface dataPoint) {
+//                paint.setStrokeWidth(3);
+//                canvas.drawLine(x-4, y-4, x+4, y+4, paint);
+//                canvas.drawLine(x+4, y-4, x-4, y+4, paint);
+//            }
+//        });
 
 //        graph.addSeries(serie);
 //        graph.addSeries(serie2);
@@ -122,32 +119,32 @@ public class ChartActivity extends AppCompatActivity {
         graph.addSeries(mSeries1);
 
 
-        min.setColor(Color.RED);
-        min.setCustomShape(new PointsGraphSeries.CustomShape() {
-            @Override
-            public void draw(Canvas canvas, Paint paint, float x, float y, DataPointInterface dataPoint) {
-                paint.setStrokeWidth(5);
-                canvas.drawLine(x-1, y-0, x+0, y+0, paint);
-            }
-        });
-
-        middle.setColor(Color.RED);
-        middle.setCustomShape(new PointsGraphSeries.CustomShape() {
-            @Override
-            public void draw(Canvas canvas, Paint paint, float x, float y, DataPointInterface dataPoint) {
-                paint.setStrokeWidth(3);
-                canvas.drawLine(x-1, y-0, x+0, y+0, paint);
-            }
-        });
-
-        max.setColor(Color.RED);
-        max.setCustomShape(new PointsGraphSeries.CustomShape() {
-            @Override
-            public void draw(Canvas canvas, Paint paint, float x, float y, DataPointInterface dataPoint) {
-                paint.setStrokeWidth(5);
-                canvas.drawLine(x-1, y-0, x+0, y+0, paint);
-            }
-        });
+//        min.setColor(Color.RED);
+//        min.setCustomShape(new PointsGraphSeries.CustomShape() {
+//            @Override
+//            public void draw(Canvas canvas, Paint paint, float x, float y, DataPointInterface dataPoint) {
+//                paint.setStrokeWidth(5);
+//                canvas.drawLine(x-1, y-0, x+0, y+0, paint);
+//            }
+//        });
+//
+//        middle.setColor(Color.RED);
+//        middle.setCustomShape(new PointsGraphSeries.CustomShape() {
+//            @Override
+//            public void draw(Canvas canvas, Paint paint, float x, float y, DataPointInterface dataPoint) {
+//                paint.setStrokeWidth(3);
+//                canvas.drawLine(x-1, y-0, x+0, y+0, paint);
+//            }
+//        });
+//
+//        max.setColor(Color.RED);
+//        max.setCustomShape(new PointsGraphSeries.CustomShape() {
+//            @Override
+//            public void draw(Canvas canvas, Paint paint, float x, float y, DataPointInterface dataPoint) {
+//                paint.setStrokeWidth(5);
+//                canvas.drawLine(x-1, y-0, x+0, y+0, paint);
+//            }
+//        });
 //
 //        sync.setColor(Color.RED);
 //        sync.setCustomShape(new PointsGraphSeries.CustomShape() {
@@ -160,20 +157,20 @@ public class ChartActivity extends AppCompatActivity {
 //        });
 //
         cont.setColor(Color.BLACK);
-        cont.setCustomShape(new PointsGraphSeries.CustomShape() {
-            @Override
-            public void draw(Canvas canvas, Paint paint, float x, float y, DataPointInterface dataPoint) {
-                paint.setStrokeWidth(2);
-                canvas.drawLine(x-0, y-7, x+0, y+7, paint);
-                canvas.drawLine(x+7, y-0, x-7, y+0, paint);
-            }
-        });
+//        cont.setCustomShape(new PointsGraphSeries.CustomShape() {
+//            @Override
+//            public void draw(Canvas canvas, Paint paint, float x, float y, DataPointInterface dataPoint) {
+//                paint.setStrokeWidth(2);
+//                canvas.drawLine(x-0, y-7, x+0, y+7, paint);
+//                canvas.drawLine(x+7, y-0, x-7, y+0, paint);
+//            }
+//        });
 
         graph.addSeries(min);
         graph.addSeries(middle);
         graph.addSeries(max);
 //        graph.addSeries(sync);
-        graph.addSeries(cont);
+//        graph.addSeries(cont);
 
         sendData.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -225,8 +222,8 @@ public class ChartActivity extends AppCompatActivity {
         Log.d("count", Integer.toString(count));
         DataPoint[] values = new DataPoint[count];
         for (int i=0; i<count; i++) {
-            double x = (1000/Double.parseDouble(trialList.get(i)))*60;
-            double y = i;
+            double x = i;
+            double y = (1000/Double.parseDouble(trialList.get(i)))*60;
             DataPoint v = new DataPoint(x, y);
             values[i] = v;
         }
@@ -313,8 +310,8 @@ public class ChartActivity extends AppCompatActivity {
         int count = trialList.size();
         DataPoint[] values = new DataPoint[count];
         for (int i=0; i<count; i++) {
-            double x = Double.parseDouble((f.getString(nChart  + "bpm", ""))) + ((Double.parseDouble((f.getString(nChart  + "tolerance", ""))))/beatInterval)*Double.parseDouble((f.getString(nChart  + "bpm", "")));
-            double y = i;
+            double x = i;
+            double y = Double.parseDouble((f.getString(nChart  + "bpm", ""))) + ((Double.parseDouble((f.getString(nChart  + "tolerance", ""))))/beatInterval)*Double.parseDouble((f.getString(nChart  + "bpm", "")));
             DataPoint v = new DataPoint(x, y);
             values[i] = v;
         }
@@ -325,8 +322,8 @@ public class ChartActivity extends AppCompatActivity {
         int count = trialList.size();
         DataPoint[] values = new DataPoint[count];
         for (int i=0; i<count; i++) {
-            double y = i;
-            double x = Double.parseDouble((f.getString(nChart  + "bpm", ""))) - ((Double.parseDouble((f.getString(nChart  + "tolerance", ""))))/beatInterval)*Double.parseDouble((f.getString(nChart  + "bpm", "")));
+            double x = i;
+            double y = Double.parseDouble((f.getString(nChart  + "bpm", ""))) - ((Double.parseDouble((f.getString(nChart  + "tolerance", ""))))/beatInterval)*Double.parseDouble((f.getString(nChart  + "bpm", "")));
             DataPoint v = new DataPoint(x, y);
             values[i] = v;
         }
@@ -337,8 +334,8 @@ public class ChartActivity extends AppCompatActivity {
         int count = trialList.size();
         DataPoint[] values = new DataPoint[count];
         for (int i=0; i<count; i++) {
-            double y = i;
-            double x = Double.parseDouble(f.getString(nChart  + "bpm", ""));
+            double x = i;
+            double y = Double.parseDouble(f.getString(nChart  + "bpm", ""));
             DataPoint v = new DataPoint(x, y);
             values[i] = v;
         }

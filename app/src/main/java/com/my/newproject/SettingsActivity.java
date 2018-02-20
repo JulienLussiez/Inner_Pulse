@@ -76,6 +76,7 @@ public class SettingsActivity extends AppCompatActivity {
 	private int stepBeats = 1;
 	private int maxBeats = 200;
 	private int minBeats = 30;
+	private Switch reaction_time_switch;
 
 
 	@Override
@@ -112,6 +113,7 @@ public class SettingsActivity extends AppCompatActivity {
         repetition = (TextView) findViewById(R.id.repetition);
         repetition_edit = (EditText) findViewById(R.id.repetition_edit);
 		im_switch = (Switch) findViewById(R.id.im_switch);
+		reaction_time_switch = (Switch) findViewById(R.id.reaction_switch);
 		send_start_text = (TextView) findViewById(R.id.send_start_text);
 		send_start = (TextView) findViewById(R.id.send_start);
 		send_start_edit = (EditText) findViewById(R.id.send_start_edit);
@@ -223,6 +225,17 @@ public class SettingsActivity extends AppCompatActivity {
 				}
 				else {
 					f.edit().putString("isChecked", "0").commit();
+				}
+			}
+		});
+		reaction_time_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton _buttonView, final boolean _isChecked)  {
+				if (_isChecked) {
+					f.edit().putString("reaction_switch_is_checked", "1").commit();
+				}
+				else {
+					f.edit().putString("reaction_switch_is_checked", "0").commit();
 				}
 			}
 		});
@@ -412,6 +425,17 @@ public class SettingsActivity extends AppCompatActivity {
 			}
 			else {
 				im_switch.setChecked(false);
+			}
+		}
+		if(f.getString("reaction_switch_is_checked", "").equals("")){
+			reaction_time_switch.setChecked(false);
+		}
+		else {
+			if (Double.parseDouble(f.getString("reaction_switch_is_checked", "")) == 1) {
+				reaction_time_switch.setChecked(true);
+			}
+			else {
+				reaction_time_switch.setChecked(false);
 			}
 		}
 	}
