@@ -7,7 +7,7 @@
     <color name="blue">#80cbc4</color>
     <color name="dark_blue">#001970</color>
     <color name="yellow">#D7DF01</color>
-    <color name="grey">#6E6E6E</color>
+    <color name="grey">#999</color>
 
     <color name="very_slow">#80cbc4</color>
     <color name="slow">#4db6ac</color>

@@ -68,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar comboBar;
     private ProgressBar rushingBar;
     private ProgressBar draggingBar;
+    private ProgressBar goodPercentageBar;
+    private ProgressBar tapProgressBar;
     private FloatingActionButton fab;
     private CustomSeekBar seekbar0;
 
@@ -83,9 +85,9 @@ public class MainActivity extends AppCompatActivity {
     private int comboMax;
     private int startMF = 0;
     private int perCounter = 1;
-    private int cd = 1;
+    private int cd = 10;
     private int firstTapInterval = 0;
-    private int firstCd = 1;
+    private int firstcd = 10;
     private double firstTap = 0;
     private double secondTap = 0;
     private double thirdTap = 0;
@@ -231,6 +233,12 @@ public class MainActivity extends AppCompatActivity {
     private double reactionTimeIsChecked;
     private int frequency;
     private TimerTask timer4;
+    private ProgressBar draggingPercentageBar;
+    private ProgressBar rushingPercentageBar;
+    private int rushing;
+    private int dragging;
+    private int goodTiming;
+    private int blue = 0xFF03a9f4;
 
 
     @Override
@@ -396,6 +404,12 @@ public class MainActivity extends AppCompatActivity {
         comboBar = (ProgressBar) findViewById(R.id.comboBar);
         rushingBar = (ProgressBar) findViewById(R.id.rushingBar);
         draggingBar = (ProgressBar) findViewById(R.id.draggingBar);
+        goodPercentageBar = (ProgressBar) findViewById(R.id.goodPercentageBar);
+        draggingPercentageBar = (ProgressBar) findViewById(R.id.draggingPercentageBar);
+        rushingPercentageBar = (ProgressBar) findViewById(R.id.rushingPercentageBar);
+        tapProgressBar = (ProgressBar) findViewById(R.id.tapProgressBar);
+
+
 
         fAsyn = getSharedPreferences("fAsyn", Activity.MODE_PRIVATE);
         f = getSharedPreferences("settings", Activity.MODE_PRIVATE);
@@ -419,41 +433,45 @@ public class MainActivity extends AppCompatActivity {
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
 //                    playSound = sp.play((int)(soundID), 1.0f, 1.0f, 1, (int)(0), 1.0f);
-                    if (tapToBegin == 0) {
-                        tapToBegin = 1;
-                        fab.setImageResource(R.drawable.ic_stop_black_24dp);
-                        seekbar.setProgress(((int)beatInterval));
-                        _setColors();
-                        _setProgressBar();
-                        fab_play = 1;
-                        combo = 0;
-                        comboOn = 0;
-                        comboMax = 0;
-                        String record = f.getString(Settings.getString("bpm", "") + Settings.getString("tolerance", ""), "");
-                        score_text.setText("Max : " + comboMax + " | Record : " + record);
-                        combo_text.setText("Combo : " + Integer.toString(combo));
-                        beatCounter = ((audibleBeats + quietBeats) * multiplier)+4;
-                        firstTapInterval = 0;
-                        comboBar.setProgress(0);
-                        j = 0;
-                        firstCd = 1;
-                        perCounter = 1;
-                        tapCounter = 0;
-                        cd = 1;
-                        perListString = "";
-                        syncList = "";
-                        contList = "";
-                        syncTap = "";
-                        contTap = "";
-                        asynList.clear();
-                        perList.clear();
-                        tapTimeList.clear();
-                        tapSoundList.clear();
-                        accuracyPercentList.clear();
-                        _startTimer();}
+//                    if (tapToBegin == 0) {
+//                        tapToBegin = 1;
+//                        fab.setImageResource(R.drawable.ic_stop_black_24dp);
+//                        seekbar.setProgress(((int)beatInterval));
+//                        _setColors();
+//                        _setProgressBar();
+//                        fab_play = 1;
+//                        combo = 0;
+//                        comboOn = 0;
+//                        comboMax = 0;
+//                        String record = f.getString(Settings.getString("bpm", "") + Settings.getString("tolerance", ""), "");
+//                        score_text.setText("Max : " + comboMax + " | Record : " + record);
+//                        combo_text.setText("Combo : " + Integer.toString(combo));
+//                        beatCounter = ((audibleBeats + quietBeats) * multiplier)+10;
+//                        firstTapInterval = 0;
+//                        comboBar.setProgress(0);
+//                        j = 0;
+//                        firstcd = 10;
+//                        perCounter = 1;
+//                        tapCounter = 0;
+//                        cd = 10;
+//                        perListString = "";
+//                        syncList = "";
+//                        contList = "";
+//                        syncTap = "";
+//                        contTap = "";
+//                        dragging = 0;
+//                        rushing = 0;
+//                        goodTiming = 0;
+//                        asynList.clear();
+//                        perList.clear();
+//                        tapTimeList.clear();
+//                        tapSoundList.clear();
+//                        accuracyPercentList.clear();
+//                        _startTimer();}
 
                         if ((play.getText().toString().equals("Stop")&& canTap == true) || (fab_play == 1 && canTap == true)) {
                             tapCounter++;
+                            tapProgressBar.incrementProgressBy(1);
                             calendar = Calendar.getInstance();
                             tapTime = calendar.getTimeInMillis();
                             tapTimeList.add(Double.valueOf(tapTime));
@@ -466,7 +484,12 @@ public class MainActivity extends AppCompatActivity {
 
                             if (firstTapInterval == 1){
                                 _makePeriodList();
-                                _feedbackPer();
+                                if (isChecked == 1){
+                                    _feedbackPer();
+                                }
+                                else {
+                                    _feedbackPerNoFb();
+                                }
 //                            feedback_per.setProgress(((int)beatInterval*2) - (int)periodMs);
 //                            seekbar.setProgress(((int)beatInterval*2) - (int)periodMs);
                             }
@@ -677,17 +700,20 @@ public class MainActivity extends AppCompatActivity {
                     combo = 0;
                     comboOn = 0;
                     comboMax = 0;
+                    dragging = 0;
+                    rushing = 0;
+                    goodTiming = 0;
                     String record = f.getString(Settings.getString("bpm", "") + Settings.getString("tolerance", ""), "");
                     score_text.setText("Max : " + comboMax + " | Record : " + record);
                     combo_text.setText("Combo : " + Integer.toString(combo));
-                    beatCounter = ((audibleBeats + quietBeats) * multiplier)+4;
+                    beatCounter = ((audibleBeats + quietBeats) * multiplier)+10;
                     firstTapInterval = 0;
                     comboBar.setProgress(0);
                     j = 0;
-                    firstCd = 1;
+                    firstcd = 10;
                     perCounter = 1;
                     tapCounter = 0;
-                    cd = 1;
+                    cd = 10;
                     perListString = "";
                     syncList = "";
                     contList = "";
@@ -728,7 +754,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 //                    countdown.cancel();
                     canTap = false;
-                    tap.setText("Tap to start");
+                    tap.setText("Tap");
                     _setColors();
                     _setProgressBar();
                     seekbar.setProgress(((int)beatInterval));
@@ -804,9 +830,9 @@ public class MainActivity extends AppCompatActivity {
 
                             if (true) {
                                 if (comboOn == 0) {
-                                    if (cd == 5){
+                                    if (cd == 0){
                                         comboOn = 1;
-                                        firstCd = 0;
+                                        firstcd = 10;
                                         _setColors();
                                         _setProgressBar();
                                         seekbar.setProgress(((int)beatInterval));
@@ -816,13 +842,10 @@ public class MainActivity extends AppCompatActivity {
                                         canTap = true;
                                     }
                                     else {
-                                        if (cd == 1 || cd == 2 || cd == 3 || cd == 4){
+                                        if (cd == 1 || cd == 2 || cd == 3 || cd == 4 || cd == 5 || cd == 6 || cd == 7 || cd == 8 || cd == 9 || cd == 10){
                                             sp.stop((int)(soundID));
                                             playSound = sp.play((int)(soundID), 1.0f, 1.0f, 1, (int)(0), 1.0f);
-                                            if (firstCd == 1) {
-                                                tap.setText(String.valueOf(cd));
-
-                                            }
+                                            tap.setText(String.valueOf(cd));
                                         }
                                         else {
                                             sp.stop((int)(soundID));
@@ -869,7 +892,7 @@ public class MainActivity extends AppCompatActivity {
 //                                j++;
 //                            }
                             beatCounter--;
-                            cd++;
+                            cd--;
 
                         }
                         else {
@@ -879,7 +902,7 @@ public class MainActivity extends AppCompatActivity {
                             fab.setImageResource(R.drawable.ic_play_arrow_black_24dp);
                             fab_play = 0;
                             seekbar.setProgress(((int)beatInterval));
-                            tap.setText("Tap to start");
+                            tap.setText("Tap");
                             timer.cancel();
                             if (timer2 != null){
                                 timer2.cancel();
@@ -904,7 +927,20 @@ public class MainActivity extends AppCompatActivity {
                             f.edit().putString(Integer.toString((int) numTry) + "bpm", Settings.getString("bpm", "")).apply();
                             f.edit().putString(Double.toString(numTry), String.valueOf((long)(perList.size()))).commit();
                             _statistics();
-                            _feedbackPostPer();
+                            if (isChecked == 1){
+                                _feedbackPostPer();
+                            }
+                            else {
+                                _feedbackPostPerNoFb();
+                            }
+                            _setColors();
+                            rushingPercentageBar.setVisibility(View.VISIBLE);
+                            draggingPercentageBar.setVisibility(View.VISIBLE);
+                            goodPercentageBar.setVisibility(View.VISIBLE);
+                            rushingBar.setVisibility(View.INVISIBLE);
+                            draggingBar.setVisibility(View.INVISIBLE);
+                            comboBar.setVisibility(View.INVISIBLE);
+                            comboBar.setProgress(0);
                             if (beatCounter == 0) {
                                 numTry++;
 //                                _storeComboMax();
@@ -1292,13 +1328,37 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void _setProgressBar () {
+        rushingPercentageBar.setMax((int) quietBeats);
+        draggingPercentageBar.setMax((int) quietBeats);
+        goodPercentageBar.setMax((int) quietBeats);
+        tapProgressBar.setMax((int) quietBeats);
+
+        rushingPercentageBar.setVisibility(View.INVISIBLE);
+        draggingPercentageBar.setVisibility(View.INVISIBLE);
+        goodPercentageBar.setVisibility(View.INVISIBLE);
+
+        rushingBar.setVisibility(View.VISIBLE);
+        draggingBar.setVisibility(View.VISIBLE);
+        comboBar.setVisibility(View.VISIBLE);
+
         colorSlow2 = colorSlow;
         rushingBar.setProgress(0);
         draggingBar.setProgress(0);
+        goodPercentageBar.setProgress(0);
+        draggingPercentageBar.setProgress(0);
+        rushingPercentageBar.setProgress(0);
+
+        tapProgressBar.setProgress(0);
+
         comboBar.setProgress(0);
         rushingBar.getProgressDrawable().setColorFilter(colorSlow, android.graphics.PorterDuff.Mode.SRC_IN);
         draggingBar.getProgressDrawable().setColorFilter(colorSlow, android.graphics.PorterDuff.Mode.SRC_IN);
+        goodPercentageBar.getProgressDrawable().setColorFilter(colorSlow, android.graphics.PorterDuff.Mode.SRC_IN);
+        draggingPercentageBar.getProgressDrawable().setColorFilter(colorSlow, android.graphics.PorterDuff.Mode.SRC_IN);
+        rushingPercentageBar.getProgressDrawable().setColorFilter(colorSlow, android.graphics.PorterDuff.Mode.SRC_IN);
         comboBar.getProgressDrawable().setColorFilter(colorSlow, android.graphics.PorterDuff.Mode.SRC_IN);
+        tapProgressBar.getProgressDrawable().setColorFilter(blue, android.graphics.PorterDuff.Mode.SRC_IN);
+
     }
 
 
@@ -1326,9 +1386,11 @@ public class MainActivity extends AppCompatActivity {
                     perfect_green.setBackgroundColor(colorSlow + colorIncrement);
                     colorSlow2 = colorSlow;
                     comboBar.getProgressDrawable().setColorFilter(colorSlow2, android.graphics.PorterDuff.Mode.SRC_IN);
+                    rushingPercentageBar.incrementProgressBy(1);
                     rushingBar.setProgress(1);
                     draggingBar.setProgress(0);
                     comboBar.setProgress(0);
+//                    goodPercentageBar.setProgress(0);
 //                    comboBar.setVisibility(View.INVISIBLE);
 //                    comboBar.setVisibility(View.GONE);
                     seekbar.setProgress(((int)beatInterval*2) - (int)periodMs);
@@ -1338,7 +1400,7 @@ public class MainActivity extends AppCompatActivity {
                         timer2.cancel();
                     }
 //                    comboOn = 0;
-                    cd = 1;
+                    cd = 10;
                 }
 
                 comboBar.setProgress(0);
@@ -1358,8 +1420,10 @@ public class MainActivity extends AppCompatActivity {
                                 perfect_green.setBackgroundColor(colorSlow + colorIncrement);
                                 colorSlow2 = colorSlow;
                                 comboBar.getProgressDrawable().setColorFilter(colorSlow2, android.graphics.PorterDuff.Mode.SRC_IN);
+                                rushingPercentageBar.incrementProgressBy(1);
                                 rushingBar.setProgress(1);
                                 draggingBar.setProgress(0);
+//                                goodPercentageBar.setProgress(0);
                                 comboBar.setProgress(0);
                                 seekbar.setProgress(((int)beatInterval*2) - (int)periodMs);
 //                                comboBar.setVisibility(View.INVISIBLE);
@@ -1370,7 +1434,7 @@ public class MainActivity extends AppCompatActivity {
                                     timer2.cancel();
                                 }
 //                                comboOn = 0;
-                                cd = 1;
+                                cd = 10;
                             }
                         }
                         else {
@@ -1386,8 +1450,10 @@ public class MainActivity extends AppCompatActivity {
                                     perfect_green.setBackgroundColor(colorSlow + colorIncrement);
                                     colorSlow2 = colorSlow;
                                     comboBar.getProgressDrawable().setColorFilter(colorSlow2, android.graphics.PorterDuff.Mode.SRC_IN);
+                                    draggingPercentageBar.incrementProgressBy(1);
                                     rushingBar.setProgress(0);
                                     draggingBar.setProgress(1);
+//                                    goodPercentageBar.setProgress(0);
                                     comboBar.setProgress(0);
                                     seekbar.setProgress(((int)beatInterval*2) - (int)periodMs);
                                     combo = 0;
@@ -1396,7 +1462,7 @@ public class MainActivity extends AppCompatActivity {
                                         timer2.cancel();
                                     }
 //                                    comboOn = 0;
-                                    cd = 1;
+                                    cd = 10;
                                 }
                             }
                             else {
@@ -1407,10 +1473,12 @@ public class MainActivity extends AppCompatActivity {
                                     too_soon_red.setBackgroundColor(colorSlow + colorIncrement);
                                     too_late_red.setBackgroundColor(colorSlow + colorIncrement);
                                     perfect_green.setBackgroundColor(colorFast + colorIncrement);
+                                    goodPercentageBar.incrementProgressBy(1);
                                     rushingBar.setProgress(0);
                                     draggingBar.setProgress(0);
+//                                    goodPercentageBar.setProgress(1);
 //                                    perfect_green.setPadding(64, 64,64,64);
-                                    comboBar.setVisibility(View.VISIBLE);
+//                                    comboBar.setVisibility(View.VISIBLE);
                                     comboBar.getProgressDrawable().setColorFilter(colorSlow2, android.graphics.PorterDuff.Mode.SRC_IN);
 //                                    comboBar.setVisibility(View.GONE);
                                     combo++;
@@ -1462,8 +1530,10 @@ public class MainActivity extends AppCompatActivity {
                                     too_soon_red.setBackgroundColor(colorSlow + colorIncrement);
                                     too_late_red.setBackgroundColor(colorFast + colorIncrement);
                                     perfect_green.setBackgroundColor(colorSlow + colorIncrement);
+                                    draggingPercentageBar.incrementProgressBy(1);
                                     rushingBar.setProgress(0);
                                     draggingBar.setProgress(1);
+//                                    goodPercentageBar.setProgress(0);
                                     comboBar.setProgress(0);
                                     colorSlow2 = colorSlow;
                                     comboBar.getProgressDrawable().setColorFilter(colorSlow2, android.graphics.PorterDuff.Mode.SRC_IN);
@@ -1474,7 +1544,7 @@ public class MainActivity extends AppCompatActivity {
                                         timer2.cancel();
                                     }
 //                                    comboOn = 0;
-                                    cd = 1;
+                                    cd = 10;
                                 }
                                 comboBar.setProgress(0);
                                 combo_text.setText("Combo : " + Integer.toString(combo));
@@ -1490,8 +1560,10 @@ public class MainActivity extends AppCompatActivity {
                                     too_soon_red.setBackgroundColor(colorSlow + colorIncrement);
                                     too_late_red.setBackgroundColor(colorFast + colorIncrement);
                                     perfect_green.setBackgroundColor(colorSlow + colorIncrement);
+//                                    draggingBar.incrementProgressBy(1);
                                     rushingBar.setProgress(0);
                                     draggingBar.setProgress(1);
+//                                    goodPercentageBar.setProgress(0);
                                     comboBar.setProgress(0);
                                     colorSlow2 = colorSlow;
                                     comboBar.getProgressDrawable().setColorFilter(colorSlow2, android.graphics.PorterDuff.Mode.SRC_IN);
@@ -1502,7 +1574,7 @@ public class MainActivity extends AppCompatActivity {
                                         timer2.cancel();
                                     }
 //                                    comboOn = 0;
-                                    cd = 1;
+                                    cd = 10;
                                 }
                                 comboBar.setProgress(0);
                                 combo_text.setText("Combo : " + Integer.toString(combo));
@@ -1511,6 +1583,138 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }
+
+    private void _feedbackPerNoFb () {
+        int colorIncrement = 0;
+        int colorCombo = colorSlow;
+
+        if (perList.size() == 0) {
+
+        }
+        else {
+            lastPer = periodMs;
+            Log.d("per", Double.toString(lastPer));
+            if (tapCounter > 1){
+                lastlastPer = perList.get(perList.size()-1);
+                Log.d("per", Double.toString(perList.get(perList.size()-1)));
+            }
+            if ((beatInterval/1000 < lastPer) && (lastPer < beatInterval - toleranceBpm) || (lastPer == beatInterval/1000)) {
+                if (comboOn == 0) {
+
+                }
+                else {
+                    rushing++;
+                    combo = 0;
+                    randomReactionActivation = 0;
+                    if (timer2 != null){
+                        timer2.cancel();
+                    }
+                    cd = 10;
+                }
+
+            }
+            else {
+                if ((beatInterval - toleranceBpm < lastPer) && (lastPer < beatInterval + toleranceBpm) || (lastPer == beatInterval - toleranceBpm)) {
+                    if (lastPer - lastlastPer < -(toleranceBpm * beatInterval) ) {
+                        if (comboOn == 0) {
+
+                        }
+                        else {
+                            rushing++;
+                            combo = 0;
+                            randomReactionActivation = 0;
+                            if (timer2 != null){
+                                timer2.cancel();
+                            }
+                            cd = 10;
+                        }
+                    }
+                    else {
+                        if (lastPer - lastlastPer > (toleranceBpm * beatInterval)) {
+                            if (comboOn == 0) {
+
+                            }
+                            else {
+                                dragging++;
+                                combo = 0;
+                                randomReactionActivation = 0;
+                                if (timer2 != null){
+                                    timer2.cancel();
+                                }
+//                                    comboOn = 0;
+                                cd = 10;
+                            }
+                        }
+                        else {
+                            if (comboOn == 0){
+
+                            }
+                            else {
+                                combo++;
+                                goodTiming++;
+                                contList = contList + (int)lastPer + ",\n";
+                                contTap = contTap + tapCounter + ",\n";
+                                if (combo%frequency == 0 && reaction == 0) {
+                                    if (tap2.getVisibility() == tap2.VISIBLE){
+                                        _randomReaction();
+                                    }
+                                    if (distractorIsChecked == 1 && distractor == 12){
+                                        _auditiveDistractor();
+                                    }
+                                }
+                                if (combo > comboMax){
+                                    comboMax = combo;
+                                }
+                                _storeComboMax();
+                                Log.d("combo", Integer.toString(comboBar.getProgress()));
+                                if (combo%10 == 0 && comboEnd == 0){
+                                    comboEnd = 1;
+                                }
+                                else {
+                                    if (comboEnd == 1){
+                                        comboEnd = 0;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                else {
+                    if ((beatInterval + toleranceBpm < lastPer) && (lastPer < beatInterval/0.1) || (lastPer == beatInterval + toleranceBpm)) {
+                        if (comboOn == 0) {
+
+                        }
+                        else {
+                            dragging++;
+                            combo = 0;
+                            randomReactionActivation = 0;
+                            if (timer2 != null){
+                                timer2.cancel();
+                            }
+//                                    comboOn = 0;
+                            cd = 10;
+                        }
+                    }
+                    else {
+                        if (comboOn == 0) {
+
+                        }
+                        else {
+                            dragging++;
+                            combo = 0;
+                            randomReactionActivation = 0;
+                            if (timer2 != null){
+                                timer2.cancel();
+                            }
+//                                    comboOn = 0;
+                            cd = 10;
+                        };
+                    }
+                }
+            }
+        }
+    }
 
     private void _statistics() {
         stats = new DescriptiveStatistics();
@@ -1929,6 +2133,125 @@ public class MainActivity extends AppCompatActivity {
         d.create().show();
     }
 
+    private void _feedbackPostPerNoFb (){
+
+        slow = 0;
+        good = 0;
+        fast = 0;
+
+        String tendency_fb;
+
+        for(i = 0; i < perList.size(); i++){
+            if ((beatInterval/1000 < perList.get((int)i)) && (perList.get((int)i) < beatInterval/1.1) || (perList.get((int)i) == beatInterval/1000)) {
+                fast += 3;
+            }
+            else {
+                if ((beatInterval/1.1 < perList.get((int)i)) && (perList.get((int)i) < beatInterval/1.05) || (perList.get((int)i) == beatInterval/1.1)) {
+                    fast += 3;
+                }
+                else {
+                    if ((beatInterval/1.05 < perList.get((int)i)) && (perList.get((int)i) < beatInterval/0.95) || (perList.get((int)i) == beatInterval/1.05)) {
+                        good++;
+                    }
+                    else {
+                        if ((beatInterval/0.95 < perList.get((int)i)) && (perList.get((int)i) < beatInterval/0.85) || (perList.get((int)i) == beatInterval/0.95)) {
+                            slow += 3;
+                        }
+                        else {
+                            if ((beatInterval/0.85 < perList.get((int)i)) && (perList.get((int)i) < beatInterval/0.1) || (perList.get((int)i) == beatInterval/0.85)) {
+                                slow += 3;
+                            }
+                            else {
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+        if(fast > slow && fast > good || fast == good){
+            tendency_fb = "Tendency to speed up : slow down";
+        }
+        else if (slow > fast && slow > good || slow == good) {
+            tendency_fb = "Tendency to slow down : speed up";
+        }
+        else if (slow == fast) {
+            tendency_fb = "Similar tendency to slow down/speed up : find your pace and stay focus to stabilize it";
+        }
+        else {
+            tendency_fb = "Stable timing : keep it up";
+        }
+        String mean_fb = "Mean Velocity : " + String.format("%.0f", (1000/perMean) * 60) + " bpm";
+        String sd_fb = "Variability :  " + "± " + String.format("%.0f", (perSD/perMean) * 60) + " bpm";
+        String comboMaxString = "Combo : " + Integer.toString(comboMax);
+        String percentage = "Good Timing : " + Integer.toString(goodTiming) + "/" + (Integer.toString((int)tapCounter)) + "\n" + "Dragging : " + Integer.toString(dragging) + "/" + (Integer.toString((int)tapCounter)) + "\n" + "Rushing : " + Integer.toString(rushing) + "/" + (Integer.toString((int)tapCounter));
+        fb_post = mean_fb + "\n" + sd_fb + "\n" + comboMaxString +  "\n\n" +  "\n\n" + tendency_fb;
+
+        d.setTitle("Feedback");
+        d.setMessage(fb_post);
+        d.setCancelable(false);
+        d.setPositiveButton("See Chart", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                intent.putExtra("afterSession", "1");
+                intent.setClass(getApplicationContext(), ChartActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+        d.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                tapToBegin = 0;
+            }
+        });
+
+//        d.create().show();
+
+//        _showDialog();
+
+
+        draggingPercentageBar.setProgress(dragging);
+        rushingPercentageBar.setProgress(rushing);
+        goodPercentageBar.setProgress(goodTiming);
+
+        combo_text.setText("Combo : " + comboMax);
+        score_text.setText("Max : " + comboMax + " | Record : " + f.getString(Settings.getString("bpm", "") + Settings.getString("tolerance", ""), ""));
+
+    }
+
+
+//    private void _showDialog () {
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//
+//        AlertDialog dialog = builder.create();
+//        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//        WindowManager.LayoutParams wmlp = dialog.getWindow().getAttributes();
+//
+//        dialog.setTitle("Feedback");
+//        dialog.setMessage(fb_post);
+////        d.setPositiveButton("See Chart", new DialogInterface.OnClickListener() {
+////            public void onClick(DialogInterface dialog, int id) {
+////                intent.putExtra("afterSession", "1");
+////                intent.setClass(getApplicationContext(), ChartActivity.class);
+////                startActivity(intent);
+////                finish();
+////            }
+////        });
+////        d.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+////            public void onClick(DialogInterface dialog, int id) {
+////                tapToBegin = 0;
+////            }
+////        });
+//
+//        dialog.getWindow().setDimAmount(0.0f);
+//        wmlp.gravity = Gravity.BOTTOM | Gravity.LEFT;
+//        wmlp.x = 100;   //x position
+//        wmlp.y = 200;   //y position
+//
+//        dialog.show();
+//    }
+    
 //    private void _feedbackPost () {
 //        if (perfectSyncPercent > 75) {
 //            feedbackSyncPost = "In time ".concat(String.valueOf((long)(perfectSyncPercent)).concat("% of time during synchronization phase : Well Done. \n"));

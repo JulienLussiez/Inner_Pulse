@@ -3,13 +3,17 @@ package com.my.newproject;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.Switch;
@@ -53,6 +57,7 @@ public class SettingsActivity extends AppCompatActivity {
 	private EditText send_end_edit;
 	private TextView send_end_text;
 	private SeekBar seekBarBpm;
+	private ImageButton random;
 
 	private String text = "";
 
@@ -68,9 +73,9 @@ public class SettingsActivity extends AppCompatActivity {
 	private int min = 30;
 
 	private SeekBar seekBarTolerance;
-	private int stepTolerance = 20;
-	private int maxTolerance = 80;
-	private int minTolerance = 40;
+	private int stepTolerance = 15;
+	private int maxTolerance = 65;
+	private int minTolerance = 20;
 
 	private SeekBar seekBarBeats;
 	private int stepBeats = 1;
@@ -92,6 +97,26 @@ public class SettingsActivity extends AppCompatActivity {
 		setContentView(R.layout.settings);
 		initialize();
 		initializeLogic();
+
+
+        random.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    if (random.getBackgroundTintList() == ColorStateList.valueOf(getResources().getColor(R.color.grey))){
+                        random.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.very_fast)));
+                        bpm.setText(" -");
+                        seekBarBpm.setVisibility(View.INVISIBLE);
+                    }
+                    else {
+                        random.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.grey)));
+                        bpm.setText(f.getString("bpm", ""));
+                        seekBarBpm.setVisibility(View.VISIBLE);
+                    }
+                }
+                return false;
+            }
+        });
 	}
 
 	private void  initialize() {
@@ -133,6 +158,7 @@ public class SettingsActivity extends AppCompatActivity {
 		seekBarBeats = (SeekBar) findViewById(R.id.seekbarBeats);
 		seekBarFrequency = (SeekBar) findViewById(R.id.seekBarFrequency);
 		frequency_text = (TextView) findViewById(R.id.frequency_text);
+		random = (ImageButton) findViewById(R.id.random);
 
 
 		f = getSharedPreferences("Settings", Activity.MODE_PRIVATE);
@@ -441,13 +467,13 @@ public class SettingsActivity extends AppCompatActivity {
 		}
 
 		if((f.getString("tolerance", "")).equals("")){
-			f.edit().putString("tolerance", "40").apply();
+			f.edit().putString("tolerance", "35").apply();
 			seekBarTolerance.setProgress(0);
-			tolerance.setText("40");
+			tolerance.setText("35");
 		}
 		else {
 			tolerance.setText(f.getString("tolerance", ""));
-			seekBarTolerance.setProgress((Integer.parseInt(f.getString("tolerance", ""))/20) - 2);
+			seekBarTolerance.setProgress((Integer.parseInt(f.getString("tolerance", ""))/15) - 1);
 			Log.d("tolerance", f.getString("tolerance", ""));
 		}
 
@@ -516,6 +542,7 @@ public class SettingsActivity extends AppCompatActivity {
 //			}
 //		}
 	}
+
 
 	@Override
 	public void onBackPressed() {

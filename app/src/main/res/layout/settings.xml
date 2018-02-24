@@ -26,6 +26,8 @@
 			android:text="Metronome"
 			android:textColor="#008dcd"
 			android:textSize="16sp" />
+
+
 	</LinearLayout>
 
 	<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -48,6 +50,17 @@
 			android:text="BPM"
 			android:textColor="#000000"
 			android:textSize="12sp" />
+
+		<ImageButton
+			android:id="@+id/random"
+			android:layout_width="wrap_content"
+			android:layout_height="32dp"
+			android:layout_column="0"
+			android:layout_gravity="right"
+			android:layout_row="0"
+			android:backgroundTint="@color/grey"
+			android:scaleType="fitCenter"
+			android:src="@drawable/ic_shuffle_white_24dp" />
 
 		<TextView
 			android:id="@+id/bpm"
@@ -137,10 +150,10 @@
 			android:id="@+id/quiet_beat_text"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:padding="8dp"
-			android:text="Beats"
-			android:layout_row="2"
 			android:layout_column="0"
+			android:layout_row="2"
+			android:padding="8dp"
+			android:text="Taps"
 			android:textColor="#000000"
 			android:textSize="12sp" />
 
@@ -363,19 +376,39 @@
 	</LinearLayout>
 
 	<LinearLayout
+		android:id="@+id/interactive_feedback_layout"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:padding="8dp"
+		android:orientation="horizontal"
+		>
+
+		<TextView
+			android:id="@+id/interactive_feedback"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:padding="8dp"
+			android:text="Interactive Feedback"
+			android:textColor="#008dcd"
+			android:textSize="16sp" />
+
+
+	</LinearLayout>
+
+	<LinearLayout
 		android:id="@+id/linear3"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:orientation="horizontal"
 		android:padding="8dp"
-		android:visibility="gone">
+		android:visibility="visible">
 
 		<Switch
 			android:id="@+id/im_switch"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:padding="8dp"
-			android:text="Interactive Feedbacks"
+			android:text=""
 			android:textColor="#000000"
 			android:textSize="12sp"
 			tools:checked="false" />
@@ -411,7 +444,7 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:padding="8dp"
-			android:text="Username"
+			android:text="Data filename"
 			android:textColor="#000000"
 			android:textSize="12sp" />
 
