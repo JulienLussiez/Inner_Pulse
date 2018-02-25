@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
@@ -239,6 +240,11 @@ public class MainActivity extends AppCompatActivity {
     private int dragging;
     private int goodTiming;
     private int blue = 0xFF03a9f4;
+    private int randomBpm;
+
+    private ImageView randomImage;
+    private int randomTrials;
+    private int trials = 1;
 
 
     @Override
@@ -408,6 +414,7 @@ public class MainActivity extends AppCompatActivity {
         draggingPercentageBar = (ProgressBar) findViewById(R.id.draggingPercentageBar);
         rushingPercentageBar = (ProgressBar) findViewById(R.id.rushingPercentageBar);
         tapProgressBar = (ProgressBar) findViewById(R.id.tapProgressBar);
+        randomImage = (ImageView) findViewById(R.id.randomImage);
 
 
 
@@ -724,6 +731,7 @@ public class MainActivity extends AppCompatActivity {
                     tapTimeList.clear();
                     tapSoundList.clear();
                     accuracyPercentList.clear();
+                    randomBpm();
                     _startTimer();
 
 //                    countdown = new CountDownTimer((long)(4*beatInterval), (long)beatInterval - 10) {
@@ -766,6 +774,19 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
+    private void randomBpm() {
+        if (randomBpm == 1 && trials == Integer.parseInt(Settings.getString("trials", ""))){
+            beatInterval = 1500 - Math.random() * 1000;
+            double i = 1000/beatInterval * 60;
+            Settings.edit().putString("bpm", Integer.toString((int) i)).apply();
+            toleranceConversion = Math.round((toleranceBpm/beatInterval) * Double.parseDouble((Settings.getString("bpm", ""))));
+            int value = (int) toleranceConversion;
+            toleranceConversionString = Integer.toString(value);
+            tempo_text.setText(Integer.toString((int) i) + " BPM ± " + toleranceConversionString + " " + Settings.getString(Settings.getString("bpm", ""), "") );
+        }
+    }
+
     private void  initializeLogic() {
         _getSettings2();
 //		audibleBeats = 16;
@@ -943,6 +964,10 @@ public class MainActivity extends AppCompatActivity {
                             comboBar.setProgress(0);
                             if (beatCounter == 0) {
                                 numTry++;
+                                trials--;
+                                if (trials == 0){
+                                    trials = randomTrials;
+                                }
 //                                _storeComboMax();
                                 f.edit().putString("numTry", String.valueOf((long) (numTry))).commit();
                                 nChart = (int) numTry - 1;
@@ -1665,7 +1690,7 @@ public class MainActivity extends AppCompatActivity {
                                 if (combo > comboMax){
                                     comboMax = combo;
                                 }
-                                _storeComboMax();
+                                _storeComboMaxNoFb();
                                 Log.d("combo", Integer.toString(comboBar.getProgress()));
                                 if (combo%10 == 0 && comboEnd == 0){
                                     comboEnd = 1;
@@ -1886,6 +1911,21 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void _storeComboMaxNoFb() {
+
+        if (f.getString((Settings.getString("bpm", "")) + Settings.getString("tolerance", ""), "").equals("")){
+            f.edit().putString(Settings.getString("bpm", "") + Settings.getString("tolerance", ""), Integer.toString(combo)).apply();
+
+        }
+        else {
+            if (combo > Integer.parseInt(f.getString(Settings.getString("bpm", "") + Settings.getString("tolerance", ""), ""))) {
+                f.edit().putString(Settings.getString("bpm", "") + Settings.getString("tolerance", ""), Integer.toString(combo)).apply();
+            }
+            else {
+            }
+        }
+    }
+
     private void _getSettings2 () {
         if (f.getString((Settings.getString("bpm", "") + Settings.getString("tolerance", "")), "").equals("")){
             score_text.setText("Max : " + comboMax + " | Record : 0" );
@@ -1922,6 +1962,33 @@ public class MainActivity extends AppCompatActivity {
         }
         else {
             frequency = Integer.parseInt((Settings.getString("frequency", "")));
+        }
+
+        if (Settings.getString("random", "").equals("")) {
+            randomBpm = 0;
+            Settings.edit().putString("random", "0").apply();
+
+        }
+        else {
+            if (Settings.getString("random", "").equals("0")) {
+                randomBpm = 0;
+                randomImage.setVisibility(View.GONE);
+            }
+            else {
+                randomBpm = 1;
+                randomImage.setVisibility(View.VISIBLE);
+            }
+        }
+
+        if (Settings.getString("trials", "").equals("")) {
+            randomTrials = 3;
+            trials = 3;
+            Settings.edit().putString("trials", "3").apply();
+
+        }
+        else {
+            randomTrials = Integer.parseInt(Settings.getString("trials", ""));
+            trials = Integer.parseInt(Settings.getString("trials", ""));
         }
 
 

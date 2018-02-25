@@ -19,6 +19,8 @@ import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.appyvet.materialrangebar.RangeBar;
+
 public class SettingsActivity extends AppCompatActivity {
 
 	private LinearLayout linear1;
@@ -38,6 +40,7 @@ public class SettingsActivity extends AppCompatActivity {
 	private TextView latency;
 	private EditText latency_edit;
 	private TextView bpm_text;
+	private TextView random_text;
 	private TextView bpm;
 	private EditText bpm_edit;
     private TextView audible_beat_text;
@@ -57,7 +60,9 @@ public class SettingsActivity extends AppCompatActivity {
 	private EditText send_end_edit;
 	private TextView send_end_text;
 	private SeekBar seekBarBpm;
-	private ImageButton random;
+    private SeekBar seekBarTrials;
+    private TextView trialsBeforeTempoChange;
+    private ImageButton random;
 
 	private String text = "";
 
@@ -70,7 +75,7 @@ public class SettingsActivity extends AppCompatActivity {
 
 	private int step = 1;
 	private int max = 120;
-	private int min = 30;
+	private int min = 40;
 
 	private SeekBar seekBarTolerance;
 	private int stepTolerance = 15;
@@ -89,34 +94,20 @@ public class SettingsActivity extends AppCompatActivity {
 	private int stepFrequency = 1;
 	private int maxFrequency = 9;
 	private int minFrequency = 3;
+    private ImageButton sptButton;
 
+    private int stepTrials = 1;
+    private int maxTrials = 3;
+    private int minTrials = 1;
 
-	@Override
+    private RangeBar rangeBar;
+
+    @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.settings);
 		initialize();
 		initializeLogic();
-
-
-        random.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                    if (random.getBackgroundTintList() == ColorStateList.valueOf(getResources().getColor(R.color.grey))){
-                        random.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.very_fast)));
-                        bpm.setText(" -");
-                        seekBarBpm.setVisibility(View.INVISIBLE);
-                    }
-                    else {
-                        random.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.grey)));
-                        bpm.setText(f.getString("bpm", ""));
-                        seekBarBpm.setVisibility(View.VISIBLE);
-                    }
-                }
-                return false;
-            }
-        });
 	}
 
 	private void  initialize() {
@@ -158,10 +149,14 @@ public class SettingsActivity extends AppCompatActivity {
 		seekBarBeats = (SeekBar) findViewById(R.id.seekbarBeats);
 		seekBarFrequency = (SeekBar) findViewById(R.id.seekBarFrequency);
 		frequency_text = (TextView) findViewById(R.id.frequency_text);
-		random = (ImageButton) findViewById(R.id.random);
+        random = (ImageButton) findViewById(R.id.random);
+        random_text = (TextView) findViewById(R.id.random_text);
+        sptButton = (ImageButton) findViewById(R.id.sptButton);
+        seekBarTrials = (SeekBar) findViewById(R.id.seekBarTrials);
+        trialsBeforeTempoChange = (TextView) findViewById(R.id.trialsBeforeTempoChange);
+        rangeBar = (RangeBar) findViewById(R.id.rangeSeekbar);
 
-
-		f = getSharedPreferences("Settings", Activity.MODE_PRIVATE);
+        f = getSharedPreferences("Settings", Activity.MODE_PRIVATE);
 
 
 		latency_edit.addTextChangedListener(new TextWatcher() {
@@ -315,7 +310,7 @@ public class SettingsActivity extends AppCompatActivity {
 			}
 		});
 
-		bpm.setText(seekBarBpm.getProgress() + "/" + seekBarBpm.getMax());
+		bpm.setText(seekBarBpm.getProgress() + "/" + seekBarBpm.getMax() + " BPM");
 
 		seekBarBpm.setMax( (max - min) / step );
 
@@ -338,8 +333,8 @@ public class SettingsActivity extends AppCompatActivity {
 						//
 						// if progress = 13 -> value = 3 + (13 * 0.1) = 4.3
 						int value = min + (progress * step);
-						bpm.setText(Integer.toString(value));
-						f.edit().putString("bpm", bpm.getText().toString()).apply();
+						bpm.setText(Integer.toString(value) + " BPM");
+						f.edit().putString("bpm", Integer.toString(value).toString()).apply();
 
 					}
 				}
@@ -375,10 +370,42 @@ public class SettingsActivity extends AppCompatActivity {
 				}
 		);
 
+        trialsBeforeTempoChange.setText(seekBarTrials.getProgress() + "/" + seekBarTrials.getMax());
+
+        seekBarTrials.setMax( (maxTrials - minTrials) / stepTrials );
+
+        seekBarTrials.setOnSeekBarChangeListener(
+                new SeekBar.OnSeekBarChangeListener()
+                {
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {}
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {}
+
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress,
+                                                  boolean fromUser)
+                    {
+                        // Ex :
+                        // And finally when you want to retrieve the value in the range you
+                        // wanted in the first place -> [3-5]
+                        //
+                        // if progress = 13 -> value = 3 + (13 * 0.1) = 4.3
+                        int value = minTrials + (progress * stepTrials);
+                        if (value == 1 ){
+                            trialsBeforeTempoChange.setText((value + " trial before tempo change"));
+                        }
+                        else {
+                            trialsBeforeTempoChange.setText((value + " trials before tempo change"));
+                        }
+                        f.edit().putString("trials", String.valueOf(value)).apply();
+                    }
+                }
+        );
 
 
-
-		tolerance.setText(seekBarTolerance.getProgress() + "/" + seekBarTolerance.getMax());
+		tolerance.setText(seekBarTolerance.getProgress() + "/" + seekBarTolerance.getMax() + " ms");
 
 		seekBarTolerance.setMax( (maxTolerance - minTolerance) / stepTolerance );
 
@@ -401,8 +428,8 @@ public class SettingsActivity extends AppCompatActivity {
 						//
 						// if progress = 13 -> value = 3 + (13 * 0.1) = 4.3
 						int value = minTolerance + (progress * stepTolerance);
-						tolerance.setText(Integer.toString(value));
-						f.edit().putString("tolerance", tolerance.getText().toString()).apply();
+						tolerance.setText(Integer.toString(value) + " ms");
+						f.edit().putString("tolerance", Integer.toString(value).toString()).apply();
 						Log.d("tolerance", f.getString("tolerance", ""));
 
 
@@ -440,7 +467,43 @@ public class SettingsActivity extends AppCompatActivity {
 				}
 		);
 
+        random.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    if (random.getBackgroundTintList() == ColorStateList.valueOf(getResources().getColor(R.color.grey))){
+                        random.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.very_fast)));
+                        bpm.setText("Random BPM");
+                        seekBarBpm.setVisibility(View.INVISIBLE);
+                        rangeBar.setVisibility(View.VISIBLE);
+                        random_text.setVisibility(View.VISIBLE);
+                        trialsBeforeTempoChange.setVisibility(View.VISIBLE);
+                        seekBarTrials.setVisibility(View.VISIBLE);
 
+                        f.edit().putString("random", "1").apply();
+                    }
+                    else {
+                        random.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.grey)));
+                        bpm.setText(f.getString("bpm", "") + " BPM");
+                        seekBarBpm.setVisibility(View.VISIBLE);
+                        rangeBar.setVisibility(View.GONE);
+                        random_text.setVisibility(View.INVISIBLE);
+                        trialsBeforeTempoChange.setVisibility(View.GONE);
+                        seekBarTrials.setVisibility(View.GONE);
+                        f.edit().putString("random", "0").apply();
+                    }
+                }
+                return false;
+            }
+        });
+
+        rangeBar.setOnRangeBarChangeListener(new RangeBar.OnRangeBarChangeListener() {
+            @Override
+            public void onRangeChangeListener(RangeBar rangeBar, int leftPinIndex, int rightPinIndex, String leftPinValue, String rightPinValue) {
+                bpm.setText(leftPinValue + " - " + rightPinValue + " BPM");
+            }
+
+        });
 
 	}
 
@@ -448,12 +511,12 @@ public class SettingsActivity extends AppCompatActivity {
 
 		if((f.getString("bpm", "")).equals("")){
 			f.edit().putString("bpm", "60").apply();
-			seekBarBpm.setProgress(30);
-			bpm.setText("60");
+			seekBarBpm.setProgress(60);
+			bpm.setText("60 BPM");
 		}
 		else {
-			bpm.setText(f.getString("bpm", ""));
-			seekBarBpm.setProgress(Integer.parseInt(f.getString("bpm", "")) - 30);
+			bpm.setText(f.getString("bpm", "") + "BPM");
+			seekBarBpm.setProgress(Integer.parseInt(f.getString("bpm", "")) - 40);
 		}
 
 		if((f.getString("frequency", "")).equals("")){
@@ -466,13 +529,28 @@ public class SettingsActivity extends AppCompatActivity {
 			seekBarFrequency.setProgress(Integer.parseInt(f.getString("frequency", "")) - 3);
 		}
 
+        if((f.getString("trials", "")).equals("")){
+            f.edit().putString("trials", "3").apply();
+            seekBarTrials.setProgress(3);
+            trialsBeforeTempoChange.setText("3 trials before tempo change");
+        }
+        else {
+		    if ((f.getString("trials", "")).equals("1")){
+                trialsBeforeTempoChange.setText((f.getString("trials", "")) + " trial before tempo change");
+            }
+            else {
+                trialsBeforeTempoChange.setText((f.getString("trials", "")) + " trials before tempo change");
+            }
+            seekBarTrials.setProgress(Integer.parseInt(f.getString("trials", "")) - 1);
+        }
+
 		if((f.getString("tolerance", "")).equals("")){
 			f.edit().putString("tolerance", "35").apply();
 			seekBarTolerance.setProgress(0);
-			tolerance.setText("35");
+			tolerance.setText("35 ms");
 		}
 		else {
-			tolerance.setText(f.getString("tolerance", ""));
+			tolerance.setText(f.getString("tolerance", "") + " ms");
 			seekBarTolerance.setProgress((Integer.parseInt(f.getString("tolerance", ""))/15) - 1);
 			Log.d("tolerance", f.getString("tolerance", ""));
 		}
@@ -530,6 +608,39 @@ public class SettingsActivity extends AppCompatActivity {
 				reaction_time_switch.setChecked(false);
 			}
 		}
+
+        if((f.getString("random", "")).equals("")){
+            f.edit().putString("random", "0").apply();
+            bpm.setText(f.getString("bpm", ""));
+            seekBarBpm.setVisibility(View.VISIBLE);
+            rangeBar.setVisibility(View.GONE);
+            random_text.setVisibility(View.INVISIBLE);
+            trialsBeforeTempoChange.setVisibility(View.GONE);
+            seekBarTrials.setVisibility(View.GONE);
+        }
+        else {
+            if((f.getString("random", "")).equals("1")){
+                random.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.very_fast)));
+                bpm.setText("Random BPM");
+                seekBarBpm.setVisibility(View.INVISIBLE);
+                rangeBar.setVisibility(View.VISIBLE);
+                random_text.setVisibility(View.VISIBLE);
+                trialsBeforeTempoChange.setVisibility(View.VISIBLE);
+                seekBarTrials.setVisibility(View.VISIBLE);
+
+            }
+            else {
+                random.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.grey)));
+                bpm.setText(f.getString("bpm", "") + " BPM");
+                seekBarBpm.setVisibility(View.VISIBLE);
+                random_text.setVisibility(View.INVISIBLE);
+            }
+
+        }
+
+        _sptButton();
+
+
 //		if(f.getString("distractor_switch_is_checked", "").equals("")){
 //			distractor_switch.setChecked(false);
 //		}
@@ -542,6 +653,20 @@ public class SettingsActivity extends AppCompatActivity {
 //			}
 //		}
 	}
+
+    private void _sptButton() {
+        sptButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    intent.setClass(getApplicationContext(), PreferredTempoActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+                return false;
+            }
+        });
+    }
 
 
 	@Override

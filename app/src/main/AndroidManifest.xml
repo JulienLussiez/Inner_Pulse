@@ -11,9 +11,11 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:replace="android:label"
+        android:label="InnerPulse"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="Inner Pulse"
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
@@ -48,11 +50,13 @@
         <activity
             android:name=".DataActivity"
             android:label="Data Collection"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".ChartActivity"
             android:label="Chart"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".PreferredTempoActivity"
+            android:label="Preferred Tempo"
             android:screenOrientation="portrait">
         </activity>
     </application>

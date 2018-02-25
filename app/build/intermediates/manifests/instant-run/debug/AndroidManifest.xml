@@ -24,14 +24,14 @@
         android:allowBackup="true"
         android:debuggable="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="Inner Pulse"
+        android:label="InnerPulse"
         android:testOnly="true"
         android:theme="@style/AppTheme" >
         <activity
             android:name="com.my.newproject.MainActivity"
             android:configChanges="orientation|screenSize"
             android:label="Inner Pulse"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="landscape" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -60,11 +60,14 @@
         <activity
             android:name="com.my.newproject.DataActivity"
             android:label="Data Collection"
-            android:screenOrientation="portrait" >
-        </activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.my.newproject.ChartActivity"
             android:label="Chart"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.my.newproject.PreferredTempoActivity"
+            android:label="Preferred Tempo"
             android:screenOrientation="portrait" >
         </activity>
 
