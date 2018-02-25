@@ -74,7 +74,7 @@ public class SettingsActivity extends AppCompatActivity {
 	private EditText tolerance_edit;
 
 	private int step = 1;
-	private int max = 120;
+	private int max = 160;
 	private int min = 40;
 
 	private SeekBar seekBarTolerance;
@@ -101,8 +101,10 @@ public class SettingsActivity extends AppCompatActivity {
     private int minTrials = 1;
 
     private RangeBar rangeBar;
+	private String preferredTempo;
+	private TextView spt;
 
-    @Override
+	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.settings);
@@ -155,6 +157,7 @@ public class SettingsActivity extends AppCompatActivity {
         seekBarTrials = (SeekBar) findViewById(R.id.seekBarTrials);
         trialsBeforeTempoChange = (TextView) findViewById(R.id.trialsBeforeTempoChange);
         rangeBar = (RangeBar) findViewById(R.id.rangeSeekbar);
+        spt = (TextView) findViewById(R.id.spt);
 
         f = getSharedPreferences("Settings", Activity.MODE_PRIVATE);
 
@@ -335,7 +338,7 @@ public class SettingsActivity extends AppCompatActivity {
 						int value = min + (progress * step);
 						bpm.setText(Integer.toString(value) + " BPM");
 						f.edit().putString("bpm", Integer.toString(value).toString()).apply();
-
+						spt.setText(String.format("%.0f%% of Preferred Tempo", (Double.parseDouble(f.getString("bpm", "")))/(Double.parseDouble(f.getString("preferredTempo", "")))*100));
 					}
 				}
 		);
@@ -473,8 +476,11 @@ public class SettingsActivity extends AppCompatActivity {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     if (random.getBackgroundTintList() == ColorStateList.valueOf(getResources().getColor(R.color.grey))){
                         random.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.very_fast)));
-                        bpm.setText("Random BPM");
-                        seekBarBpm.setVisibility(View.INVISIBLE);
+						bpm.setText((f.getString("randomMin", "") + " - " + (f.getString("randomMax", "") + " BPM")));
+						String min = String.format("%.0f", (Double.parseDouble(f.getString("randomMin", "")))/(Double.parseDouble(f.getString("preferredTempo", "")))*100);
+						String max = String.format("%.0f", (Double.parseDouble(f.getString("randomMax", "")))/(Double.parseDouble(f.getString("preferredTempo", "")))*100);
+						spt.setText(String.format("%s%% - %s%% of Preferred Tempo", min, max));
+						seekBarBpm.setVisibility(View.INVISIBLE);
                         rangeBar.setVisibility(View.VISIBLE);
                         random_text.setVisibility(View.VISIBLE);
                         trialsBeforeTempoChange.setVisibility(View.VISIBLE);
@@ -485,7 +491,8 @@ public class SettingsActivity extends AppCompatActivity {
                     else {
                         random.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.grey)));
                         bpm.setText(f.getString("bpm", "") + " BPM");
-                        seekBarBpm.setVisibility(View.VISIBLE);
+						spt.setText(String.format("%.0f%% of Preferred Tempo", (Double.parseDouble(f.getString("bpm", "")))/(Double.parseDouble(f.getString("preferredTempo", "")))*100));
+						seekBarBpm.setVisibility(View.VISIBLE);
                         rangeBar.setVisibility(View.GONE);
                         random_text.setVisibility(View.INVISIBLE);
                         trialsBeforeTempoChange.setVisibility(View.GONE);
@@ -501,7 +508,13 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onRangeChangeListener(RangeBar rangeBar, int leftPinIndex, int rightPinIndex, String leftPinValue, String rightPinValue) {
                 bpm.setText(leftPinValue + " - " + rightPinValue + " BPM");
-            }
+				f.edit().putString("randomMin", leftPinValue).apply();
+				f.edit().putString("randomMax", rightPinValue).apply();
+				String min = String.format("%.0f", (Double.parseDouble(f.getString("randomMin", "")))/(Double.parseDouble(f.getString("preferredTempo", "")))*100);
+				String max = String.format("%.0f", (Double.parseDouble(f.getString("randomMax", "")))/(Double.parseDouble(f.getString("preferredTempo", "")))*100);
+				spt.setText(String.format("%s%% - %s%% of Preferred Tempo", min, max));
+
+			}
 
         });
 
@@ -517,6 +530,36 @@ public class SettingsActivity extends AppCompatActivity {
 		else {
 			bpm.setText(f.getString("bpm", "") + "BPM");
 			seekBarBpm.setProgress(Integer.parseInt(f.getString("bpm", "")) - 40);
+		}
+
+		if((f.getString("preferredTempo", "")).equals("")){
+			f.edit().putString("preferredTempo", "120").apply();
+		}
+		else {
+			preferredTempo = (f.getString("preferredTempo", "") + "BPM");
+			spt.setText(String.format("%.0f%% of Preferred Tempo", (Double.parseDouble(f.getString("bpm", "")))/(Double.parseDouble(f.getString("preferredTempo", "")))*100));
+		}
+
+		if((f.getString("randomMin", "")).equals("")){
+			f.edit().putString("randomMin", "60").apply();
+			f.edit().putString("randomMax", "100").apply();
+			rangeBar.setRangePinsByValue(60, 100);
+			bpm.setText(("60" + " - " + "100" + " BPM"));
+		}
+		else {
+			rangeBar.setRangePinsByValue(Float.parseFloat(f.getString("randomMin", "")), Float.parseFloat(f.getString("randomMax", "")));
+			bpm.setText((f.getString("randomMin", "") + " - " + (f.getString("randomMax", "") + " BPM")));
+		}
+
+		if((f.getString("randomMax", "")).equals("")){
+			f.edit().putString("randomMin", "60").apply();
+			f.edit().putString("randomMax", "100").apply();
+			rangeBar.setRangePinsByValue(60, 100);
+			bpm.setText(("60" + " - " + "100" + " BPM"));
+		}
+		else {
+			rangeBar.setRangePinsByValue(Float.parseFloat(f.getString("randomMin", "")), Float.parseFloat(f.getString("randomMax", "")));
+			bpm.setText((f.getString("randomMin", "") + " - " + (f.getString("randomMax", "") + " BPM")));
 		}
 
 		if((f.getString("frequency", "")).equals("")){
@@ -621,8 +664,8 @@ public class SettingsActivity extends AppCompatActivity {
         else {
             if((f.getString("random", "")).equals("1")){
                 random.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.very_fast)));
-                bpm.setText("Random BPM");
-                seekBarBpm.setVisibility(View.INVISIBLE);
+				bpm.setText((f.getString("randomMin", "") + " - " + (f.getString("randomMax", "") + " BPM")));
+				seekBarBpm.setVisibility(View.INVISIBLE);
                 rangeBar.setVisibility(View.VISIBLE);
                 random_text.setVisibility(View.VISIBLE);
                 trialsBeforeTempoChange.setVisibility(View.VISIBLE);

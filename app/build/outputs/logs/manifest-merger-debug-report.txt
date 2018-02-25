@@ -98,7 +98,7 @@ MERGED from [com.android.support:support-media-compat:25.0.1] C:\Users\Julien\.g
 activity#com.my.newproject.MainActivity
 ADDED from C:\Users\Julien\Desktop\Inner Pulse 3\app\src\main\AndroidManifest.xml:20:9-30:20
 	android:screenOrientation
-		ADDED from C:\Users\Julien\Desktop\Inner Pulse 3\app\src\main\AndroidManifest.xml:24:13-50
+		ADDED from C:\Users\Julien\Desktop\Inner Pulse 3\app\src\main\AndroidManifest.xml:24:13-49
 	android:label
 		ADDED from C:\Users\Julien\Desktop\Inner Pulse 3\app\src\main\AndroidManifest.xml:23:13-40
 	android:configChanges

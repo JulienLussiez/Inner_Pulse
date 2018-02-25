@@ -83,7 +83,7 @@
 
 		<TextView
 			android:id="@+id/bpm"
-			android:layout_width="wrap_content"
+			android:layout_width="125dp"
 			android:layout_height="wrap_content"
 			android:layout_column="1"
 			android:layout_row="0"
@@ -134,7 +134,7 @@
 
 		<SeekBar
 			android:id="@+id/seekBarBpm"
-			android:layout_width="170dp"
+			android:layout_width="172dp"
 			android:layout_height="33dp"
 			android:layout_column="2"
 			android:layout_marginRight="108dp"
@@ -145,33 +145,32 @@
 			android:progress="0"
 			android:visibility="visible" />
 
-		<com.appyvet.materialrangebar.RangeBar
-			xmlns:app="http://schemas.android.com/apk/res-auto"
+		<com.appyvet.materialrangebar.RangeBar xmlns:app="http://schemas.android.com/apk/res-auto"
 			android:id="@+id/rangeSeekbar"
-			android:layout_width="140dp"
+			android:layout_width="155dp"
 			android:layout_height="wrap_content"
-			android:layout_marginLeft="16dp"
-			android:layout_marginRight="16dp"
-			android:layout_marginTop="-44dp"
-			android:layout_row="0"
 			android:layout_column="2"
+			android:layout_marginLeft="0dp"
+			android:layout_marginRight="16dp"
+			android:layout_marginTop="-43dp"
+			android:layout_row="0"
 			android:visibility="gone"
-			app:mrb_rangeBarPaddingBottom="15dp"
-			app:mrb_temporaryPins="false"
-			app:mrb_pinRadius="0dp"
+			app:mrb_connectingLineColor="@color/fast"
+			app:mrb_connectingLineWeight="2dp"
 			app:mrb_pinColor="#ffffff"
-			app:mrb_pinTextColor="#ffffff"
 			app:mrb_pinMaxFont="6sp"
 			app:mrb_pinMinFont="6sp"
-			app:mrb_selectorColor="@color/fast"
-			app:mrb_connectingLineColor="@color/fast"
+			app:mrb_pinRadius="0dp"
+			app:mrb_pinTextColor="#ffffff"
+			app:mrb_rangeBarPaddingBottom="15dp"
 			app:mrb_selectorBoundaryColor="@color/very_fast"
+			app:mrb_selectorColor="@color/fast"
 			app:mrb_selectorSize="6dp"
-			app:mrb_tickEnd="120"
-			app:mrb_tickInterval="10"
-			app:mrb_connectingLineWeight="2dp"
-			app:mrb_tickColor="@color/grey"
-			app:mrb_tickStart="40"/>
+			app:mrb_temporaryPins="false"
+			app:mrb_tickColor="@android:color/transparent"
+			app:mrb_tickEnd="160"
+			app:mrb_tickInterval="1"
+			app:mrb_tickStart="40" />
 
 
 		<TextView
@@ -190,7 +189,7 @@
 
 		<SeekBar
 			android:id="@+id/seekBarTrials"
-			android:layout_width="170dp"
+			android:layout_width="165dp"
 			android:layout_height="33dp"
 			android:layout_column="2"
 			android:layout_marginRight="108dp"
@@ -270,7 +269,7 @@
 
 		<SeekBar
 			android:id="@+id/seekbarTolerance"
-			android:layout_width="180dp"
+			android:layout_width="175dp"
 			android:layout_height="32dp"
 			android:layout_column="2"
 			android:layout_marginRight="108dp"
@@ -315,7 +314,7 @@
 
 		<SeekBar
 			android:id="@+id/seekbarBeats"
-			android:layout_width="180dp"
+			android:layout_width="175dp"
 			android:layout_height="32dp"
 			android:layout_column="2"
 			android:layout_marginRight="108dp"

@@ -89,6 +89,8 @@ public class MainActivity extends AppCompatActivity {
     private int cd = 10;
     private int firstTapInterval = 0;
     private int firstcd = 10;
+    private double randomMin;
+    private double randomMax;
     private double firstTap = 0;
     private double secondTap = 0;
     private double thirdTap = 0;
@@ -711,7 +713,12 @@ public class MainActivity extends AppCompatActivity {
                     rushing = 0;
                     goodTiming = 0;
                     String record = f.getString(Settings.getString("bpm", "") + Settings.getString("tolerance", ""), "");
-                    score_text.setText("Max : " + comboMax + " | Record : " + record);
+                    if (record.equals("")){
+                        score_text.setText("Max : " + comboMax + " | Record : 0");
+                    }
+                    else {
+                        score_text.setText("Max : " + comboMax + " | Record : " + record);
+                    }
                     combo_text.setText("Combo : " + Integer.toString(combo));
                     beatCounter = ((audibleBeats + quietBeats) * multiplier)+10;
                     firstTapInterval = 0;
@@ -777,7 +784,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void randomBpm() {
         if (randomBpm == 1 && trials == Integer.parseInt(Settings.getString("trials", ""))){
-            beatInterval = 1500 - Math.random() * 1000;
+            beatInterval = randomMin - Math.random() * (randomMin - randomMax);
+            Log.d("minmax", String.valueOf(beatInterval));
             double i = 1000/beatInterval * 60;
             Settings.edit().putString("bpm", Integer.toString((int) i)).apply();
             toleranceConversion = Math.round((toleranceBpm/beatInterval) * Double.parseDouble((Settings.getString("bpm", ""))));
@@ -1989,6 +1997,24 @@ public class MainActivity extends AppCompatActivity {
         else {
             randomTrials = Integer.parseInt(Settings.getString("trials", ""));
             trials = Integer.parseInt(Settings.getString("trials", ""));
+        }
+
+        if (Settings.getString("randomMin", "").equals("")) {
+            randomMin = 1000;
+            Settings.edit().putString("randomMin", "60").apply();
+
+        }
+        else {
+            randomMin = (60/Double.parseDouble(Settings.getString("randomMin", "")))*1000;
+        }
+
+        if (Settings.getString("randomMax", "").equals("")) {
+            randomMax = 600;
+            Settings.edit().putString("randomMax", "100").apply();
+
+        }
+        else {
+            randomMax = (60/Double.parseDouble(Settings.getString("randomMax", "")))*1000;
         }
 
 
